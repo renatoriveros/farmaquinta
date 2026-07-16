@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use App\Models\TurnoCaja;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -27,13 +28,24 @@ class HandleInertiaRequests extends Middleware
      *
      * @return array<string, mixed>
      */
-    public function share(Request $request): array
-    {
-        return [
-            ...parent::share($request),
-            'auth' => [
-                'user' => $request->user(),
-            ],
-        ];
+  public function share(Request $request): array
+{
+    $user = $request->user();
+    $turnoActivo = null;
+
+    // Solo si el usuario está logueado y es Cajero, buscamos si tiene un turno "Abierto"
+    if ($user && $user->rol === 'Cajero') {
+        $turnoActivo = TurnoCaja::where('id_usuario', $user->id)
+            ->where('estado', 'Abierto')
+            ->first();
     }
+
+    return array_merge(parent::share($request), [
+        'auth' => [
+            'user' => $user,
+            // Si tiene turno abierto mandamos los datos, si no, mandamos null
+            'turno_activo' => $turnoActivo, 
+        ],
+    ]);
+}
 }
