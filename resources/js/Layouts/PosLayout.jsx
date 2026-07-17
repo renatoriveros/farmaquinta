@@ -28,7 +28,7 @@ export default function PosLayout({ auth, children, titulo }) {
                     <h2 className="text-xl font-bold text-white flex items-center gap-2">
                         <span className="text-[#3b82f6]">Farmaquinta</span> 
                     </h2>
-                    <p className="text-xs text-gray-500 mt-1">Sucursal {auth.user.id_sucursal || 1} - Active</p>
+                    <p className="text-xs text-gray-500 mt-1">Sucursal {auth.user.id_sucursal || 1} - Activa</p>
                 </div>
 
                 <nav className="flex-1 px-4 py-6 space-y-2">

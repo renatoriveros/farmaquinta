@@ -5,6 +5,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\TurnoCajaController;
+use App\Http\Controllers\ProductoController;
 
 // 1. PÁGINA DE INICIO (Pública)
 Route::get('/', function () {
@@ -42,6 +43,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/turno/abrir', [TurnoCajaController::class, 'abrir'])->name('turno.abrir');
+    Route::get('/api/buscar-producto', [ProductoController::class, 'buscarPuntoVenta'])->name('api.productos.buscar');
 });
 
 require __DIR__.'/auth.php';
