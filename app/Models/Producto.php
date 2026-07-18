@@ -28,4 +28,9 @@ class Producto extends Model
         'stock_minimo',
         'activo'
     ];
+    // RELACIÓN: Un producto "tiene muchos" lotes
+    public function lotes()
+    {
+        return $this->hasMany(LotesInventario::class, 'id_producto', 'id_producto');
+    }
 }
