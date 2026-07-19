@@ -62,7 +62,9 @@ export default function BuscadorProducto({ onProductoEncontrado, mostrarAlerta }
                         nombre_comercial: productosEncontrados[0].nombre_comercial,
                         precio_venta: productosEncontrados[0].precio_venta,
                         cantidad: 1,
-                        stock_maximo: productosEncontrados[0].lotes_sum_cantidad_disponible 
+                        stock_maximo: productosEncontrados[0].lotes_sum_cantidad_disponible,
+                        requiere_receta: productosEncontrados[0].requiere_receta,
+                        laboratorio: productosEncontrados[0].laboratorio
                     });
                     setBusqueda(''); 
                 } else if (productosEncontrados.length > 1) {
@@ -88,7 +90,9 @@ export default function BuscadorProducto({ onProductoEncontrado, mostrarAlerta }
             nombre_comercial: producto.nombre_comercial,
             precio_venta: producto.precio_venta,
             cantidad: 1,
-            stock_maximo: producto.lotes_sum_cantidad_disponible
+            stock_maximo: producto.lotes_sum_cantidad_disponible,
+            requiere_receta: producto.requiere_receta,
+            laboratorio: producto.laboratorio
         });
         setBusqueda('');
         setSugerencias([]);

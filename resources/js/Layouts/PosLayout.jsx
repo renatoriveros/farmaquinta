@@ -20,7 +20,7 @@ export default function PosLayout({ auth, children, titulo }) {
 
     return (
         <div className="flex h-screen bg-[#f4f7f6] font-sans relative">
-            <Head title={`${titulo} - RxPOS`} />
+            <Head title={`${titulo} - Farmaquinta`} />
 
             {/* BARRA LATERAL (SIDEBAR ESTÁTICO) */}
             <aside className="w-64 bg-[#232936] text-gray-300 flex flex-col h-full shadow-2xl z-20">

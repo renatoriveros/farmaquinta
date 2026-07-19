@@ -27,12 +27,23 @@ export default function CarritoVenta({ items, onModificar, onEliminar }) {
                     {items.map((item) => (
                         <tr key={item.id_producto} className="hover:bg-blue-50/40 transition-colors group">
                             
-                            {/* Nombre del Producto */}
+                           {/* Nombre del Producto y Alertas */}
                             <td className="p-4">
-                                <p className="font-bold text-gray-900 text-base ">{item.nombre_comercial}</p>
-                                {item.codigo_barras && (
-                                    <p className="text-xs text-gray-400 mt-0.5">COD: {item.codigo_barras}</p>
-                                )}
+                                <p className="font-bold text-gray-900 text-base">{item.nombre_comercial}</p>
+                                
+                                {/* Contenedor flex para alinear el código y la etiqueta de receta horizontalmente */}
+                                <div className="flex items-center gap-3 mt-1">
+                                    {item.codigo_barras && (
+                                        <p className="text-xs text-gray-400 font-mono">COD: {item.codigo_barras}</p>
+                                    )}
+                                    
+                                    {/* Alerta de receta simplificada (usamos == 1 por seguridad de tipos) */}
+                                        {item.requiere_receta == 1 && (
+                                            <span className="text-red-600 font-bold text-xs tracking-tight">
+                                                * Requiere Receta *
+                                            </span>
+                                    )}
+                                </div>
                             </td>
 
                             {/* Precio Unitario */}
