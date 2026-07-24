@@ -35,8 +35,8 @@ export default function PosLayout({ auth, children, titulo }) {
                     <Link href="/venta" className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${url.startsWith('/venta') ? 'bg-[#3b82f6] text-white font-semibold' : 'hover:bg-gray-800 hover:text-white'}`}>
                         <span></span> Punto de Venta
                     </Link>
-                    <Link href="/stock" className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${url.startsWith('/stock') ? 'bg-[#3b82f6] text-white font-semibold' : 'hover:bg-gray-800 hover:text-white'}`}>
-                        <span></span> Inventario
+                    <Link href="/ingreso" className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${url.startsWith('/ingreso') ? 'bg-[#3b82f6] text-white font-semibold' : 'hover:bg-gray-800 hover:text-white'}`}>
+                        <span></span> Ingreso de Stock
                     </Link>
                     <Link href="/historial" className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${url.startsWith('/historial') ? 'bg-[#3b82f6] text-white font-semibold' : 'hover:bg-gray-800 hover:text-white'}`}>
                         <span></span> Historial

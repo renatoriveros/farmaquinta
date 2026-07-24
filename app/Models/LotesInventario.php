@@ -20,6 +20,7 @@ class LotesInventario extends Model
         'id_producto',
         'id_proveedor',
         'id_sucursal',
+        'id_ingreso',
         'numero_lote',
         'fecha_caducidad',
         'cantidad_disponible',
@@ -36,5 +37,12 @@ class LotesInventario extends Model
     public function proveedor()
     {
         return $this->belongsTo(Proveedor::class, 'id_proveedor', 'id_proveedor');
+    }
+    
+      //7. Relación: Un lote pertenece a un ingreso de mercadería (DTE/XML).
+     
+    public function ingresoMercaderia()
+    {
+        return $this->belongsTo(IngresoMercaderia::class, 'id_ingreso', 'id_ingreso');
     }
 }
