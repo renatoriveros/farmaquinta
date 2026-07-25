@@ -21,6 +21,7 @@ class Producto extends Model
         'codigo_barras',
         'nombre_comercial',
         'principio_activo',
+        'laboratorio',
         'concentracion',
         'presentacion',
         'requiere_receta',

@@ -142,7 +142,7 @@ export default function IngresoStock({ auth }) {
         // Mostrar error al usuario, eliminar cuando este listo para producción
        if (error.response && error.response.data) {
         
-        mostrarAlerta("Error del servidor: ", 'error');
+        mostrarAlerta("Error del servidor ", 'error');
         } else {
             
             mostrarAlerta("Ocurrió un error de conexión o el servidor no responde.", 'error');

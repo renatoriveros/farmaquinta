@@ -112,15 +112,6 @@ export default function PanelCobro({
                         
                         <span className="text-sm">Crédito</span>
                     </button>
-
-                    <button 
-                        onClick={() => onAbrirCobro('factura')}
-                        disabled={carritoVacio}
-                        className="bg-gray-700 hover:bg-gray-800 disabled:bg-gray-300 text-white font-bold py-3 rounded-xl shadow-sm transition-colors flex flex-col items-center justify-center gap-1"
-                    >
-                        
-                        <span className="text-sm">Factura</span>
-                    </button>
                 </div>
             </div>
         </div>

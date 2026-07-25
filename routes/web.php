@@ -8,6 +8,7 @@ use App\Http\Controllers\TurnoCajaController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\VentaController;
 use App\Http\Controllers\IngresoMercaderiaController;
+use App\Http\Controllers\CategoriaController;
 
 // 1. PÁGINA DE INICIO (Pública)
 Route::get('/', function () {
@@ -35,6 +36,30 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/ingreso', function () {
         return Inertia::render('Ingreso');
     })->name('ingreso');
+
+
+    // Grupo de rutas para la sección "Nuevo"
+    Route::prefix('nuevo')->group(function () {
+    
+    Route::get('/producto', [ProductoController::class, 'create'])->name('nuevo.producto');// cargo el render de nuevo / producto
+    //pero primero paso a productocontroller y ejecuto la funcion create(el getall)
+
+    Route::post('/producto', [ProductoController::class, 'NuevoRemedio'])->name('ingreso.nuevo.producto');
+    //renderizo nuevo producto, pero antes paso a producto controller y ejecuto nuevoRemedio
+
+    Route::get('/proveedor', function () {
+        return Inertia::render('Nuevo/Proveedor');
+    })->name('nuevo.proveedor');
+
+    Route::get('/desactivar-producto', function () {
+        return Inertia::render('Nuevo/DesactivarProducto');
+    })->name('nuevo.desactivar-producto');
+
+    Route::get('/activar-producto', function () {
+        return Inertia::render('Nuevo/ActivarProducto');
+    })->name('nuevo.activar-producto');
+
+    });
 
     Route::get('/historial', function () {
         return Inertia::render('HistorialCompras');

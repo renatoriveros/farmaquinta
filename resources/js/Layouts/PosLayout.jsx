@@ -4,6 +4,8 @@ import { useState } from 'react';
 export default function PosLayout({ auth, children, titulo }) {
     // Obtenemos la URL actual para saber qué botón del menú pintar de azul
     const { url } = usePage();
+    //sirve para mostrar el menu
+    const [menuNuevoAbierto, setMenuNuevoAbierto] = useState(false);
 
     // Verificamos si el usuario es un cajero y si NO tiene un turno activo en la BD
     const requiereApertura = auth.user.rol === 'Cajero' && !auth.turno_activo;
@@ -38,6 +40,43 @@ export default function PosLayout({ auth, children, titulo }) {
                     <Link href="/ingreso" className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${url.startsWith('/ingreso') ? 'bg-[#3b82f6] text-white font-semibold' : 'hover:bg-gray-800 hover:text-white'}`}>
                         <span></span> Ingreso de Stock
                     </Link>
+
+                    {/* SECCIÓN NUEVO - DESPLEGABLE */}
+                <div>
+                    <button 
+                        onClick={() => setMenuNuevoAbierto(!menuNuevoAbierto)}
+                        className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-colors ${url.startsWith('/nuevo') ? 'bg-[#3b82f6] text-white font-semibold' : 'hover:bg-gray-800 hover:text-white'}`}
+                    >
+                        <div className="flex items-center gap-3">
+                            <span></span> Nuevo
+                        </div>
+                        {/* Icono de flecha que rota según el estado */}
+                        <svg 
+                            className={`w-4 h-4 transition-transform duration-200 ${menuNuevoAbierto ? 'rotate-90' : ''}`} 
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+
+                    {/* SUBMENÚ */}
+                    {menuNuevoAbierto && (
+                        <div className="pl-4 pr-4 py-2 space-y-1 bg-blue-900/40 rounded-b-lg mb-2">
+                            <Link href="/nuevo/producto" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/nuevo/producto' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
+                                Nuevo Producto
+                            </Link>
+                            <Link href="/nuevo/proveedor" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/nuevo/proveedor' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
+                                Nuevo Proveedor
+                            </Link>
+                            <Link href="/nuevo/desactivar-producto" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/nuevo/desactivar-producto' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
+                                Desactivar Producto
+                            </Link>
+                            <Link href="/nuevo/activar-producto" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/nuevo/activar-producto' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
+                                Activar Producto
+                            </Link>
+                        </div>
+                    )}
+                </div>
                     <Link href="/historial" className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${url.startsWith('/historial') ? 'bg-[#3b82f6] text-white font-semibold' : 'hover:bg-gray-800 hover:text-white'}`}>
                         <span></span> Historial
                     </Link>
