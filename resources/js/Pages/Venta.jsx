@@ -6,6 +6,7 @@ import CarritoVenta from '@/Components/Pos/CarritoVenta';
 import PanelCobro from '@/Components/Pos/PanelCobro';
 import ModalCobroEfectivo from '@/Components/Pos/ModalCobroEfectivo';
 import ModalVentasPendientes from '@/Components/Pos/ModalVentasPendientes';
+import ModalRecetaRetenida from '@/Components/Pos/ModalRecetaRetenida';
 
 export default function Venta({ auth }) {
     // ESTADOS GLOBALES DEL PUNTO DE VENTA
@@ -34,6 +35,11 @@ export default function Venta({ auth }) {
     });
     const [mostrarModalPendientes, setMostrarModalPendientes] = useState(false);
 
+    //modulo de requiere receta
+    const [showModalReceta, setShowModalReceta] = useState(false);
+    const requiereReceta = carrito.some(producto => producto.receta_retenida === true || producto.receta_retenida === 1);
+    const [datosPagoPendiente, setDatosPagoPendiente] = useState(null);
+
     // EFECTO: Calcular el subtotal y total del carrito + descuento
     useEffect(() => {
         const nuevoSubtotal = carrito.reduce((acc, item) => acc + (item.precio_venta * item.cantidad), 0);
@@ -58,8 +64,8 @@ export default function Venta({ auth }) {
 
         const calculoTotal = nuevoSubtotal - montoDescontado;
         setTotal(calculoTotal > 0 ? calculoTotal : 0);
-    }, [carrito, descuento, tipoDescuento]); // <-- Se agregó tipoDescuento como dependencia
-
+    }, [carrito, descuento, tipoDescuento]); 
+    
     // EFECTOS: Auto-guardado en LocalStorage
     useEffect(() => {
         localStorage.setItem('farmaquinta_carrito', JSON.stringify(carrito));
@@ -152,12 +158,20 @@ export default function Venta({ auth }) {
     };
     const cerrarModalCobro = () => setMostrarModalCobro(false);
 
-    // LA FUNCIÓN QUE CONECTA CON LARAVEL
-    const procesarVentaEfectivo = async (efectivo, vuelto) => {
-        // Validación extra de seguridad por si acaso
+    
+    
+    const procesarVentaEfectivo = async (efectivo, vuelto, folioRecibido = null) => {
         if (!auth.turno_activo) {
             mostrarAlerta("No hay un turno activo. Abre caja primero.", "error");
             return;
+        }
+
+        // INTERCEPCIÓN: Si requiere receta y AÚN NO tenemos el folio
+        if (requiereReceta && !folioRecibido) {
+            setDatosPagoPendiente({ efectivo, vuelto }); 
+            cerrarModalCobro(); 
+            setShowModalReceta(true); 
+            return; 
         }
 
         try {
@@ -168,20 +182,21 @@ export default function Venta({ auth }) {
                 metodo_pago: 'Efectivo',
                 id_sucursal: auth.user.id_sucursal,
                 id_turno: auth.turno_activo.id_turno,
-                pago_recibido: efectivo,
-                vuelto: vuelto
+                pago_recibido: efectivo, 
+                vuelto: vuelto,          
+                folio_receta: folioRecibido
             };
 
-            // Cambiamos el mensaje para avisar que se está procesando
             mostrarAlerta("Procesando venta...", "success");
 
             const respuesta = await axios.post('/procesar-venta', payload);
 
             if (respuesta.data.success) {
-                mostrarAlerta(`¡Venta exitosa! Folio: ${respuesta.data.id_venta}`, "success");
-                setCarrito([]); // Vaciamos carrito
-                setDescuento(0); // Reiniciamos descuento
-                cerrarModalCobro(); // Cerramos el modal
+                mostrarAlerta(`Venta número ${respuesta.data.id_venta} exitosa`, "success");
+                setCarrito([]);
+                setDescuento(0);
+                setDatosPagoPendiente(null);
+                cerrarModalCobro(); 
             }
         } catch (error) {
             console.error("Error al procesar la venta:", error);
@@ -230,10 +245,16 @@ export default function Venta({ auth }) {
                 <div className={`fixed top-6 right-6 z-[100] px-6 py-4 rounded-xl shadow-2xl font-bold transition-all duration-300 animate-fade-in-down flex items-center gap-3 ${
                     notificacion.tipo === 'error' 
                         ? 'bg-red-50 text-red-600 border-l-4 border-red-500' 
-                        : 'bg-yellow-50 text-yellow-700 border-l-4 border-yellow-500'
+                        : notificacion.tipo === 'success'
+                            ? 'bg-green-50 text-green-700 border-l-4 border-green-500'
+                            : 'bg-yellow-50 text-yellow-700 border-l-4 border-yellow-500'
                 }`}>
                     <span className="text-xl">
-                        {notificacion.tipo === 'error' ? '' : ''}
+                        {notificacion.tipo === 'success' && (
+                            <svg className="w-6 h-6 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        )}
                     </span>
                     {notificacion.mensaje}
                 </div>
@@ -303,6 +324,19 @@ export default function Venta({ auth }) {
                 pendientes={ventasPendientes}
                 onRecuperar={recuperarVenta}
                 onEliminar={eliminarVentaPendiente}
+            />
+            {/* MODAL DE RECETA RETENIDA */}
+            <ModalRecetaRetenida
+                isOpen={showModalReceta}
+                onClose={() => {
+                    setShowModalReceta(false);
+                    setDatosPagoPendiente(null);
+                }}
+                onConfirm={(folioDigitado) => {
+                    setShowModalReceta(false);
+                    // Disparamos la venta con el dinero guardado y el folio que nos envía el modal
+                    procesarVentaEfectivo(datosPagoPendiente.efectivo, datosPagoPendiente.vuelto, folioDigitado);
+                }}
             />
 
         </PosLayout>

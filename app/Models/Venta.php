@@ -8,7 +8,7 @@ class Venta extends Model
 {
     protected $table = 'ventas';
     protected $primaryKey = 'id_venta';
-    public $timestamps = false; // Lo apagamos porque usas tu propio campo 'fecha_hora'
+    public $timestamps = false; 
 
     protected $fillable = [
         'id_sucursal',
@@ -17,6 +17,8 @@ class Venta extends Model
         'fecha_hora',
         'metodo_pago',
         'folio_receta',
-        'total_venta'
+        'total_venta',
+        'pago_recibido',
+        'vuelto'
     ];
 }

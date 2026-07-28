@@ -107,10 +107,11 @@ export default function ModalCobroEfectivo({ isOpen, onClose, total, onConfirmar
                         </span>
                     </div>
 
-                    {/* Botón de Confirmación */}
+                   {/* Botón de Confirmación */}
                     <button 
                         onClick={() => {
-                            onConfirmarVenta(efectivoRecibido, vuelto); // Le pasamos los datos por si los necesita
+                            // Convertimos el string del input a un número entero antes de enviarlo
+                            onConfirmarVenta(parseInt(efectivoRecibido), vuelto); 
                         }}
                         disabled={parseInt(efectivoRecibido) < total || !efectivoRecibido}
                         className="w-full bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white font-black py-4 rounded-xl shadow-md transition-colors text-xl flex justify-center items-center gap-2"
