@@ -19,7 +19,19 @@ export default function Producto({ categorias = [] }) {
         requiere_receta: false, 
         precio_venta: '',
         stock_minimo: 10, 
+        receta_retenida:false,
     });
+
+    const handleTextoLimpio = (campo, valor) => {
+    // Esta regla permite: Letras (mayúsculas/minúsculas), números, espacios, puntos, comas y guiones.
+    // Prohíbe automáticamente todo lo demás (<, >, {, }, #, $, etc.)
+    const regex = /^[a-zA-Z0-9\s.,-]*$/;
+
+    if (regex.test(valor)) {
+        
+        setData(campo, valor);
+    }
+};
 
     //  Función para enviar el formulario, cuando apreto el submit del formulario
     //desencadena esta funcion
@@ -78,6 +90,7 @@ export default function Producto({ categorias = [] }) {
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Código de Barras</label>
                                 <input
                                     type="text"
+                                    maxLength={30}
                                     className="w-full border-gray-300 rounded-lg shadow-sm focus:border-[#0f3b8e] focus:ring focus:ring-[#0f3b8e] focus:ring-opacity-50"
                                     value={data.codigo_barras}
                                     onChange={e => setData('codigo_barras', e.target.value)}
@@ -107,6 +120,7 @@ export default function Producto({ categorias = [] }) {
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Nombre Comercial</label>
                                 <input
                                     type="text"
+                                    maxLength={60}
                                     className="w-full border-gray-300 rounded-lg shadow-sm focus:border-[#0f3b8e] focus:ring focus:ring-[#0f3b8e] focus:ring-opacity-50"
                                     value={data.nombre_comercial}
                                     onChange={e => setData('nombre_comercial', e.target.value)}
@@ -119,6 +133,7 @@ export default function Producto({ categorias = [] }) {
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Principio Activo</label>
                                 <input
                                     type="text"
+                                    maxLength={70}
                                     className="w-full border-gray-300 rounded-lg shadow-sm focus:border-[#0f3b8e] focus:ring focus:ring-[#0f3b8e] focus:ring-opacity-50"
                                     value={data.principio_activo}
                                     onChange={e => setData('principio_activo', e.target.value)}
@@ -131,6 +146,7 @@ export default function Producto({ categorias = [] }) {
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Laboratorio</label>
                                 <input
                                     type="text"
+                                    maxLength={40}
                                     className="w-full border-gray-300 rounded-lg shadow-sm focus:border-[#0f3b8e] focus:ring focus:ring-[#0f3b8e] focus:ring-opacity-50"
                                     value={data.laboratorio}
                                     onChange={e => setData('laboratorio', e.target.value)}
@@ -143,6 +159,7 @@ export default function Producto({ categorias = [] }) {
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Concentración</label>
                                 <input
                                     type="text"
+                                    maxLength={40}
                                     placeholder="Ej: 1450 ppm F, 500mg"
                                     className="w-full border-gray-300 rounded-lg shadow-sm focus:border-[#0f3b8e] focus:ring focus:ring-[#0f3b8e] focus:ring-opacity-50"
                                     value={data.concentracion}
@@ -156,6 +173,7 @@ export default function Producto({ categorias = [] }) {
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Presentación</label>
                                 <input
                                     type="text"
+                                    maxLength={40}
                                     placeholder="Ej: Tubo 110 gr, Frasco 250 ml"
                                     className="w-full border-gray-300 rounded-lg shadow-sm focus:border-[#0f3b8e] focus:ring focus:ring-[#0f3b8e] focus:ring-opacity-50"
                                     value={data.presentacion}
@@ -172,7 +190,7 @@ export default function Producto({ categorias = [] }) {
                                     <input
                                         type="number"
                                         min="0"
-                                        step="0.01"
+                                        step="1"
                                         className="w-full pl-8 border-gray-300 rounded-lg shadow-sm focus:border-[#0f3b8e] focus:ring focus:ring-[#0f3b8e] focus:ring-opacity-50"
                                         value={data.precio_venta}
                                         onChange={e => setData('precio_venta', e.target.value)}
@@ -197,19 +215,46 @@ export default function Producto({ categorias = [] }) {
 
                         {/* Fila separada para el Checkbox y el Botón de envío */}
                         <div className="flex flex-col md:flex-row justify-between items-center pt-4 border-t border-gray-100">
-                            
-                            {/* Requiere Receta (Checkbox) */}
-                            <div className="flex items-center mb-4 md:mb-0">
-                                <input
-                                    id="requiere_receta"
-                                    type="checkbox"
-                                    className="h-4 w-4 text-[#0f3b8e] focus:ring-[#0f3b8e] border-gray-300 rounded"
-                                    checked={data.requiere_receta}
-                                    onChange={e => setData('requiere_receta', e.target.checked)}
-                                />
-                                <label htmlFor="requiere_receta" className="ml-2 block text-sm text-gray-900 font-medium">
-                                    Este producto requiere receta médica
-                                </label>
+                                 {/* Requiere Receta (Checkbox) */}
+                            <div className="mb-4 md:mb-0">
+                                <div className="flex items-center">
+                                    <input
+                                        id="requiere_receta"
+                                        type="checkbox"
+                                        className="h-4 w-4 text-[#0f3b8e] focus:ring-[#0f3b8e] border-gray-300 rounded"
+                                        checked={data.requiere_receta}
+                                        onChange={e => setData('requiere_receta', e.target.checked)}
+                                    />
+                                    <label htmlFor="requiere_receta" className="ml-2 block text-sm text-gray-900 font-medium">
+                                        Este producto requiere receta médica
+                                    </label>
+                                </div>
+                                {errors.requiere_receta && (
+                                    <span className="block text-red-500 text-xs mt-1">
+                                        {errors.requiere_receta}
+                                    </span>
+                                )}
+                            </div>
+
+                              {/* Receta Retenida (Checkbox) */}
+                            <div className="mb-4 md:mb-0">
+                                <div className="flex items-center">
+                                    <input
+                                        id="receta_retenida"
+                                        type="checkbox"
+                                        className="h-4 w-4 text-[#0f3b8e] focus:ring-[#0f3b8e] border-gray-300 rounded"
+                                        checked={data.receta_retenida}
+                                        onChange={e => setData('receta_retenida', e.target.checked)}
+                                    />
+                                    <label htmlFor="receta_retenida" className="ml-2 block text-sm text-gray-900 font-medium">
+                                        Este producto requiere receta retenida
+                                    </label>
+                                </div>
+                                {errors.receta_retenida && (
+                                    <span className="block text-red-500 text-xs mt-1">
+                                        {errors.receta_retenida}
+                                    </span>
+                                )}
                             </div>
 
                             <button

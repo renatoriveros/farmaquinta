@@ -68,12 +68,13 @@ export default function PosLayout({ auth, children, titulo }) {
                             <Link href="/nuevo/proveedor" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/nuevo/proveedor' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
                                 Nuevo Proveedor
                             </Link>
-                            <Link href="/nuevo/desactivar-producto" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/nuevo/desactivar-producto' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
-                                Desactivar Producto
-                            </Link>
                             <Link href="/nuevo/activar-producto" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/nuevo/activar-producto' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
                                 Activar Producto
                             </Link>
+                            <Link href="/nuevo/desactivar-producto" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/nuevo/desactivar-producto' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
+                                Desactivar Producto
+                            </Link>
+                            
                         </div>
                     )}
                 </div>

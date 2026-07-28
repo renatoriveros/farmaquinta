@@ -31,18 +31,23 @@ export default function CarritoVenta({ items, onModificar, onEliminar }) {
                             <td className="p-4">
                                 <p className="font-bold text-gray-900 text-base">{item.nombre_comercial}</p>
                                 
-                                {/* Contenedor flex para alinear el código y la etiqueta de receta horizontalmente */}
-                                <div className="flex items-center gap-3 mt-1">
+                                <div className="flex items-center justify-between mt-1 gap-4">
                                     {item.codigo_barras && (
                                         <p className="text-xs text-gray-400 font-mono">COD: {item.codigo_barras}</p>
                                     )}
                                     
-                                    {/* Alerta de receta simplificada (usamos == 1 por seguridad de tipos) */}
+                                    <div className="flex gap-4 ml-auto">
                                         {item.requiere_receta == 1 && (
-                                            <span className="text-red-600 font-bold text-xs tracking-tight">
-                                                * Requiere Receta *
+                                            <span className="text-red-600 font-bold text-xs tracking-tight whitespace-nowrap">
+                                                 Requiere Receta
                                             </span>
-                                    )}
+                                        )}
+                                        {item.receta_retenida == 1 && (
+                                            <span className="text-red-600 font-bold text-xs tracking-tight whitespace-nowrap">
+                                               * Receta Retenida *
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
                             </td>
 

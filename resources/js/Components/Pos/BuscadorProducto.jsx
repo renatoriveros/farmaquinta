@@ -64,7 +64,8 @@ export default function BuscadorProducto({ onProductoEncontrado, mostrarAlerta }
                         cantidad: 1,
                         stock_maximo: productosEncontrados[0].lotes_sum_cantidad_disponible,
                         requiere_receta: productosEncontrados[0].requiere_receta,
-                        laboratorio: productosEncontrados[0].laboratorio
+                        laboratorio: productosEncontrados[0].laboratorio,
+                        receta_retenida: productosEncontrados[0].receta_retenida
                     });
                     setBusqueda(''); 
                 } else if (productosEncontrados.length > 1) {
@@ -92,7 +93,8 @@ export default function BuscadorProducto({ onProductoEncontrado, mostrarAlerta }
             cantidad: 1,
             stock_maximo: producto.lotes_sum_cantidad_disponible,
             requiere_receta: producto.requiere_receta,
-            laboratorio: producto.laboratorio
+            laboratorio: producto.laboratorio,
+            receta_retenida: producto.receta_retenida
         });
         setBusqueda('');
         setSugerencias([]);

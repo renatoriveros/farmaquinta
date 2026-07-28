@@ -97,7 +97,7 @@ class VentaController extends Controller
 
                 // Barrera de seguridad por si el stock físico no coincide con el digital
                 if ($cantidadRequerida > 0) {
-                    throw new \Exception("Stock insuficiente en el lote para procesar el producto ID: " . $item['id_producto']);
+                    throw new \Exception("Stock insuficiente en el lote para procesar el producto " . $item['id_producto']);
                 }
             }
 

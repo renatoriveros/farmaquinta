@@ -9,6 +9,7 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\VentaController;
 use App\Http\Controllers\IngresoMercaderiaController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\ProveedorController;
 
 // 1. PÁGINA DE INICIO (Pública)
 Route::get('/', function () {
@@ -47,17 +48,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/producto', [ProductoController::class, 'NuevoRemedio'])->name('ingreso.nuevo.producto');
     //renderizo nuevo producto, pero antes paso a producto controller y ejecuto nuevoRemedio
 
-    Route::get('/proveedor', function () {
-        return Inertia::render('Nuevo/Proveedor');
-    })->name('nuevo.proveedor');
+    // 1. Ruta GET: Entra a la función create() para mostrar el formulario
+    Route::get('/proveedor', [ProveedorController::class, 'create'])->name('nuevo.proveedor');
+
+    // 2. Ruta POST: Entra a la función store() para guardar los datos
+    Route::post('/proveedor', [ProveedorController::class, 'store'])->name('ingreso.nuevo.proveedor');
+
+
+    Route::get('/activar-producto', [ProductoController::class, 'gestionar'])->name('activar-producto');
+
+    Route::post('/producto/{id_producto}/toggle', [ProductoController::class, 'toggleActivo'])->name('nuevo.producto.toggle');
 
     Route::get('/desactivar-producto', function () {
         return Inertia::render('Nuevo/DesactivarProducto');
     })->name('nuevo.desactivar-producto');
-
-    Route::get('/activar-producto', function () {
-        return Inertia::render('Nuevo/ActivarProducto');
-    })->name('nuevo.activar-producto');
 
     });
 
