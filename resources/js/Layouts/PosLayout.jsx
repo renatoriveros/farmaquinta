@@ -6,6 +6,7 @@ export default function PosLayout({ auth, children, titulo }) {
     const { url } = usePage();
     //sirve para mostrar el menu
     const [menuNuevoAbierto, setMenuNuevoAbierto] = useState(false);
+    const [menuStockAbierto, setMenuStockAbierto] = useState(false);
 
     // Verificamos si el usuario es un cajero y si NO tiene un turno activo en la BD
     const requiereApertura = auth.user.rol === 'Cajero' && !auth.turno_activo;
@@ -37,9 +38,7 @@ export default function PosLayout({ auth, children, titulo }) {
                     <Link href="/venta" className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${url.startsWith('/venta') ? 'bg-[#3b82f6] text-white font-semibold' : 'hover:bg-gray-800 hover:text-white'}`}>
                         <span></span> Punto de Venta
                     </Link>
-                    <Link href="/ingreso" className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${url.startsWith('/ingreso') ? 'bg-[#3b82f6] text-white font-semibold' : 'hover:bg-gray-800 hover:text-white'}`}>
-                        <span></span> Ingreso de Stock
-                    </Link>
+                    
 
                     {/* SECCIÓN NUEVO - DESPLEGABLE */}
                 <div>
@@ -71,13 +70,52 @@ export default function PosLayout({ auth, children, titulo }) {
                             <Link href="/nuevo/activar-producto" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/nuevo/activar-producto' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
                                 Activar Producto
                             </Link>
-                            <Link href="/nuevo/desactivar-producto" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/nuevo/desactivar-producto' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
-                                Desactivar Producto
-                            </Link>
-                            
                         </div>
                     )}
                 </div>
+                
+                {/* SECCIÓN STOCK - DESPLEGABLE */}
+                <div>
+                    <button 
+                        onClick={() => setMenuStockAbierto(!menuStockAbierto)}
+                        className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-colors ${url.startsWith('/stock') ? 'bg-[#3b82f6] text-white font-semibold' : 'hover:bg-gray-800 hover:text-white'}`}
+                    >
+                        <div className="flex items-center gap-3">
+                            
+                            <span></span> Stock
+                        </div>
+                        
+                        <svg 
+                            className={`w-4 h-4 transition-transform duration-200 ${menuStockAbierto ? 'rotate-90' : ''}`} 
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+
+                    {/* SUBMENÚ DE STOCK */}
+                    {menuStockAbierto && (
+                        <div className="pl-4 pr-4 py-2 space-y-1 bg-blue-900/40 rounded-b-lg mb-2">
+                           <Link href="/stock/ingreso" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/stock/ingreso' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
+                                Ingreso de Mercadería
+                            </Link>
+                            <Link href="/stock/movimientos" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/stock/movimientos' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
+                                Movimientos Extras
+                            </Link>
+                            <Link href="/stock/lotes" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/stock/lotes' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
+                                Gestión de Lotes
+                            </Link>
+                            <Link href="/stock/ubicacion" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/stock/ubicacion' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
+                                Ubicación Física
+                            </Link>
+                            <Link href="/stock/motivos" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/stock/motivos' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
+                                Catálogo de Motivos
+                            </Link>
+                        </div>
+                    )}
+                </div>
+
+
                     <Link href="/historial" className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${url.startsWith('/historial') ? 'bg-[#3b82f6] text-white font-semibold' : 'hover:bg-gray-800 hover:text-white'}`}>
                         <span></span> Historial
                     </Link>

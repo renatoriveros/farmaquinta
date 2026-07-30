@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import PosLayout from '@/Layouts/PosLayout';
-import TablaProductosXml from '@/Components/Ingreso_mercaderia/TablaProductosXml';
+import TablaProductosXml from '@/Components/Stock/Ingreso_mercaderia/TablaProductosXml';
 
 export default function IngresoStock({ auth }) {
     // ==========================================
@@ -19,7 +19,7 @@ export default function IngresoStock({ auth }) {
     setNotificacion({ visible: true, mensaje, tipo });//y la desaparezco cada 3 segundos
     setTimeout(() => {
         setNotificacion({ visible: false, mensaje: '', tipo: '' });
-    }, 3000); 
+    }, 10000); 
 };
 
     // ==========================================
@@ -34,7 +34,7 @@ export default function IngresoStock({ auth }) {
                 setDatosFactura(datosParseados); 
             } catch (error) {
                 console.warn("No se pudo cargar la factura previa en el ingreso.");
-                localStorage.removeItem('facturaActual');//remove es para borrar la key del localStorage
+                localStorage.removeItem('facturaActual');
             }
         }
     }, []);
@@ -72,7 +72,7 @@ export default function IngresoStock({ auth }) {
         formData.append('archivo_xml', archivoXml);
 
         try {
-            const respuesta = await axios.post('/ingreso/previsualizar-xml', formData, {
+            const respuesta = await axios.post('/stock/ingreso/previsualizar', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 
@@ -86,7 +86,9 @@ export default function IngresoStock({ auth }) {
             
         } catch (error) {
             console.error("Error del servidor:", error);
-            setErrorValidacion('Hubo un problema al procesar el archivo en el servidor.');
+            const mensajeBackend = error.response?.data?.message || 'Hubo un problema al procesar el archivo en el servidor.';
+            mostrarAlerta(mensajeBackend, 'error');
+            setArchivoXml(null);o
         } finally {
             setCargando(false);
         }
@@ -122,7 +124,7 @@ export default function IngresoStock({ auth }) {
     try {
         
         // petición POST
-        const response = await axios.post('/api/ingresos/guardar-lote', payload);
+        const response = await axios.post('/stock/ingreso/guardar', payload);
         
         //  si sale bien
         if (response.status === 200 || response.status === 201) {
@@ -136,15 +138,15 @@ export default function IngresoStock({ auth }) {
         }
 
     } catch (error) {
+        console.error("Error al guardar:", error);
         
-        console.error("Error al guardar ");
-        
-        // Mostrar error al usuario, eliminar cuando este listo para producción
-       if (error.response && error.response.data) {
-        
-        mostrarAlerta("Error del servidor ", 'error');
-        } else {
+        if (error.response && error.response.data) {
+            console.log("Detalle del error de Laravel:", error.response.data); 
             
+            // Extraer el mensaje real que mandó el controlador
+            const mensajeReal = error.response.data.error || "Error del servidor";
+            mostrarAlerta(mensajeReal, 'error');
+        } else {
             mostrarAlerta("Ocurrió un error de conexión o el servidor no responde.", 'error');
         }
     }

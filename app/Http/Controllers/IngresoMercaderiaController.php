@@ -10,6 +10,12 @@ use App\Models\Proveedor;
 
 class IngresoMercaderiaController extends Controller
 {
+    public function index()
+    {
+        // Esto le dice a Inertia que busque el archivo Ingreso.jsx 
+        // dentro de resources/js/Pages/Stock/
+        return \Inertia\Inertia::render('Stock/Ingreso');
+    }
     public function previsualizar(Request $request)
     {
         // 1. Validar que efectivamente venga un archivo y sea XML
@@ -38,6 +44,23 @@ class IngresoMercaderiaController extends Controller
             $folio = (string) $encabezado->IdDoc->Folio;
             $fechaEmision = (string) $encabezado->IdDoc->FchEmis;
             $total = (string) $encabezado->Totales->MntTotal;
+
+            // ==========================================
+            // VALIDACIÓN: ¿La factura ya fue ingresada?
+            // ==========================================
+            $proveedor = Proveedor::where('identificacion_fiscal', $rutProveedor)->first();
+            if ($proveedor) {
+                $ingresoExistente = IngresoMercaderia::where('id_proveedor', $proveedor->id_proveedor)
+                                                     ->where('folio_documento', $folio)
+                                                     ->exists();
+                
+                if ($ingresoExistente) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => "La Factura {$folio} ya fue procesada anteriormente."
+                    ], 422);
+                }
+            }
 
             // Extraer el Detalle (Los productos)
             $productos = [];
@@ -108,32 +131,10 @@ class IngresoMercaderiaController extends Controller
         $productosXml = $request->input('productos');
         $idSucursal = $request->input('id_sucursal');
 
-        // ==========================================
-        // FASE A: VALIDACIONES ESTRICTAS
-        // ==========================================
+    
 
         $codigosXml = collect($productosXml)->pluck('codigo')->toArray();//esto srive para obtener un array de los codigos de los productos que vienen del XML
 
-        // Buscamos cuáles de esos códigos realmente existen en tu tabla de productos
-        // NOTA: Ajusta 'codigo_barras' al nombre real de la columna en tu BD
-      //  $productosExistentes = Producto::whereIn('codigo_barras', $codigosXml)
-                                  //  ->pluck('codigo_barras')
-                                    // ->toArray();//toArray pasa de collection a array simple
-
-        // Calculamos la diferencia: ¿Qué códigos están en el XML pero NO en la Base de Datos?
-       // $productosFaltantes = array_diff($codigosXml, $productosExistentes);
-
-        // Si hay faltantes, abortamos todo y devolvemos el error 422
-       // if (!empty($productosFaltantes)) {
-        //    return response()->json([
-          //      'error' => 'No se puede procesar el ingreso. Hay productos que no existen en el maestro.',
-            //    'codigos_faltantes' => array_values($productosFaltantes) // Se los mandamos a React para mostrarlos
-            //], 422);
-        //}
-
-        // ==========================================
-        // FASE B: TRANSACCIÓN DE BASE DE DATOS
-        // ==========================================
         try {
             DB::beginTransaction(); // Empezamos a grabar: Todo o Nada
              $rutProveedor = $datosFactura['id_proveedor'];//con esto obtengo el rut del proveedor que viene del payload de factura, 
@@ -170,7 +171,6 @@ class IngresoMercaderiaController extends Controller
                     'error' => 'El producto con código de barras ' . $prod['codigo_barras'] . ' no existe en la base de datos.'
                 ], 422);
             }
-
                 $lotesParaInsertar[] = [
                     'id_producto' => $productoReal->id_producto,
                     'id_proveedor' => $proveedor->id_proveedor,

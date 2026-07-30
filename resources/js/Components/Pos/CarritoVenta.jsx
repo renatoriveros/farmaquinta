@@ -44,7 +44,7 @@ export default function CarritoVenta({ items, onModificar, onEliminar }) {
                                         )}
                                         {item.receta_retenida == 1 && (
                                             <span className="text-red-600 font-bold text-xs tracking-tight whitespace-nowrap">
-                                               * Receta Retenida *
+                                               * Retenida *
                                             </span>
                                         )}
                                     </div>

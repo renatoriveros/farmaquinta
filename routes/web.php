@@ -39,7 +39,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('ingreso');
 
 
-    // Grupo de rutas para la sección "Nuevo"
+    // GRUPO DE RUTAS NUEVO
+    
     Route::prefix('nuevo')->group(function () {
     
     Route::get('/producto', [ProductoController::class, 'create'])->name('nuevo.producto');// cargo el render de nuevo / producto
@@ -48,10 +49,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/producto', [ProductoController::class, 'NuevoRemedio'])->name('ingreso.nuevo.producto');
     //renderizo nuevo producto, pero antes paso a producto controller y ejecuto nuevoRemedio
 
-    // 1. Ruta GET: Entra a la función create() para mostrar el formulario
+    // 1. entra a create para mostrar el formulario
     Route::get('/proveedor', [ProveedorController::class, 'create'])->name('nuevo.proveedor');
 
-    // 2. Ruta POST: Entra a la función store() para guardar los datos
+    // para guardar los datos
     Route::post('/proveedor', [ProveedorController::class, 'store'])->name('ingreso.nuevo.proveedor');
 
 
@@ -59,9 +60,46 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('/producto/{id_producto}/toggle', [ProductoController::class, 'toggleActivo'])->name('nuevo.producto.toggle');
 
-    Route::get('/desactivar-producto', function () {
-        return Inertia::render('Nuevo/DesactivarProducto');
-    })->name('nuevo.desactivar-producto');
+    });
+    
+    // GRUPO DE RUTAS STOCK
+    
+    Route::prefix('stock')->name('stock.')->group(function () {
+
+        //rutas para ingreso.
+        Route::get('/ingreso', [IngresoMercaderiaController::class, 'index'])->name('ingreso');
+        Route::post('/ingreso/previsualizar', [IngresoMercaderiaController::class, 'previsualizar'])->name('ingreso.previsualizar');
+        Route::post('/ingreso/guardar', [IngresoMercaderiaController::class, 'guardarLote'])->name('ingreso.guardar');
+        
+        // 1. Compras (Ingreso de facturas / XML)
+        // GET: Muestra la pantalla para subir facturas e historial reciente
+        Route::get('/compras', [CompraController::class, 'index'])->name('compras');
+        // POST: Procesa el formulario o el XML de la nueva compra
+        Route::post('/compras', [CompraController::class, 'store'])->name('compras.store');
+
+        // 2. Movimientos Extras (Mermas, caducados, regalos)
+        // GET: Renderiza el formulario para hacer un ajuste manual
+        Route::get('/movimientos', [MovimientoStockController::class, 'create'])->name('movimientos');
+        // POST: Guarda el movimiento y descuenta/suma al kardex
+        Route::post('/movimientos', [MovimientoStockController::class, 'store'])->name('movimientos.store');
+
+        // 3. Gestión de Lotes
+        // GET: Muestra el listado de lotes y sus fechas de vencimiento
+        Route::get('/lotes', [LoteController::class, 'index'])->name('lotes');
+        // POST/PUT: Permite editar un lote o registrar alertas
+        Route::post('/lotes', [LoteController::class, 'store'])->name('lotes.store');
+
+        // 4. Ubicación Física
+        // GET: Muestra el mapa de estantes o listado de ubicaciones
+        Route::get('/ubicacion', [UbicacionController::class, 'index'])->name('ubicacion');
+        // POST: Asigna rápidamente un producto a un pasillo/estante
+        Route::post('/ubicacion/asignar', [UbicacionController::class, 'asignar'])->name('ubicacion.asignar');
+
+        // 5. Catálogo de Motivos (Mantenedor para los movimientos extras)
+        // GET: Renderiza la tabla con los motivos (ej: "Robo", "Vencimiento")
+        Route::get('/motivos', [MotivoController::class, 'index'])->name('motivos');
+        // POST: Crea un nuevo motivo
+        Route::post('/motivos', [MotivoController::class, 'store'])->name('motivos.store');
 
     });
 
