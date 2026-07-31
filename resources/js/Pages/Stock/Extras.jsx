@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, Head } from '@inertiajs/react';
 import axios from 'axios';
 import PosLayout from '@/Layouts/PosLayout'; 
@@ -19,7 +19,29 @@ export default function Extras({ auth }) {
     const [buscando, setBuscando] = useState(false);
     const [notificacion, setNotificacion] = useState(null);
 
-    const buscarProducto = async (codigo) => {
+    // Leer parámetros de la URL para auto-rellenar
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const urlCodigo = params.get('codigo_barras');
+        const urlLote = params.get('lote');
+        const urlMotivo = params.get('motivo');
+        const urlCantidad = params.get('cantidad');
+
+        if (urlCodigo) {
+            setData(data => ({
+                ...data,
+                codigo_barras: urlCodigo,
+                tipo_movimiento: 'salida',
+                motivo: urlMotivo || 'merma',
+                cantidad: urlCantidad || ''
+            }));
+            
+            // Buscar el producto automáticamente y seleccionar el lote si se pasó
+            buscarProducto(urlCodigo, urlLote);
+        }
+    }, []);
+
+    const buscarProducto = async (codigo, loteDeseado = null) => {
         if (!codigo) return;
         
         setBuscando(true);
@@ -33,9 +55,8 @@ export default function Extras({ auth }) {
             
             setData(data => ({
             ...data,
-            
             id_producto: producto.id_producto, 
-            numero_lote: lotesDelProducto.length === 1 ? lotesDelProducto[0].numero_lote : ''
+            numero_lote: loteDeseado ? loteDeseado : (lotesDelProducto.length === 1 ? lotesDelProducto[0].numero_lote : '')
         }));
             
         } catch (error) {
@@ -59,7 +80,7 @@ export default function Extras({ auth }) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // 1. VALIDACIÓN FRONTEND: Revisamos qué campos faltan
+        //  Revisamos qué campos faltan
         const camposFaltantes = [];
         
         if (!data.codigo_barras || !data.id_producto) camposFaltantes.push('Producto');
@@ -68,13 +89,13 @@ export default function Extras({ auth }) {
         if (!data.motivo) camposFaltantes.push('Motivo');
         if (!data.cantidad || isNaN(data.cantidad) || Number(data.cantidad) <= 0) camposFaltantes.push('Cantidad (debe ser mayor a 0)');
 
-        // Si hay campos faltantes, mostramos la notificación y detenemos el envío
+        
         if (camposFaltantes.length > 0) {
             mostrarNotificacion(
                 'error', 
                 `Faltan rellenar los siguientes campos: ${camposFaltantes.join(', ')}.`
             );
-            return; // Detiene la ejecución aquí
+            return;
         }
 
         // 2. ENVÍO AL BACKEND (Si pasa la validación)
@@ -126,12 +147,6 @@ export default function Extras({ auth }) {
             <div className="flex-1 p-8 overflow-y-auto">
                 
                 <div className="max-w-4xl mx-auto">
-                    {/* ENCABEZADO DE LA VISTA */}
-                    <div className="mb-6">
-                        <h1 className="text-2xl font-bold text-gray-800">Registrar Movimiento Extra</h1>
-                        <p className="text-sm text-gray-500 mt-1">Ajustes manuales de inventario (mermas, vencimientos, etc.)</p>
-                    </div>
-
                     {/* TARJETA DEL FORMULARIO */}
                     <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                         <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-8">
@@ -158,7 +173,7 @@ export default function Extras({ auth }) {
                                                 onChange={(e) => setData('codigo_barras', e.target.value)}
                                                 onKeyDown={(e) => {
                                                     if (e.key === 'Enter') {
-                                                        e.preventDefault(); // Evita que el formulario se envíe
+                                                        e.preventDefault();
                                                         buscarProducto(data.codigo_barras);
                                                     }
                                                 }}
@@ -274,7 +289,7 @@ export default function Extras({ auth }) {
                                             rows="2"
                                             maxLength={50}
                                             className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-[#3b82f6] focus:ring-[#3b82f6] sm:text-sm transition-colors"
-                                            placeholder="Detalla qué pasó exactamente..."
+                                            placeholder="Detalla el motivo de el movimiento"
                                             value={data.observaciones}
                                             onChange={(e) => setData('observaciones', e.target.value)}
                                         />

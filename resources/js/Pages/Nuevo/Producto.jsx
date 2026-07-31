@@ -55,7 +55,7 @@ export default function Producto({ categorias = [] }) {
     };
 
     return (
-        <PosLayout auth={auth} user={auth?.user}>
+        <PosLayout auth={auth} user={auth?.user} titulo="Registrar Nuevo Producto">
             <div className="p-6 max-w-7xl mx-auto">
                 
                 {/* 1. Alerta de Notificación: Se dibuja aquí, pero por sus clases 'fixed' aparecerá en la esquina superior derecha */}
@@ -75,9 +75,7 @@ export default function Producto({ categorias = [] }) {
                         <span>{notificacion.mensaje}</span>
                     </div>
                 )}
-                <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-2xl font-bold text-[#0f3b8e]">Registrar Nuevo Producto</h1>
-                </div>
+                
 
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                     <form onSubmit={handleSubmit} className="space-y-6">{/*el formulario se envia cuando hayun submit en el boton que yo diga que es el submit */}

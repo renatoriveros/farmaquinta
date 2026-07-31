@@ -267,7 +267,7 @@ export default function Venta({ auth }) {
                     
                     {/* ENCABEZADO Y AVISO DE VENTAS EN ESPERA */}
                     <div className="flex justify-between items-center h-10">
-                        <h2 className="text-2xl font-black text-gray-800">{auth.user.name}</h2>
+                        <h2 className="text-2xl font-black text-gray-800"> No molestar, {auth.user.name} trabajando</h2>
                         {ventasPendientes.length > 0 && (
                             <button 
                                 onClick={() => setMostrarModalPendientes(true)}

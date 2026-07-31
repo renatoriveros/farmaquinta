@@ -39,7 +39,7 @@ export default function Proveedor({}) {
     };
 
     return (
-        <PosLayout auth={auth} user={auth?.user}>
+        <PosLayout auth={auth} user={auth?.user} titulo="Registrar Nuevo Proveedor">
             <div className="p-6 max-w-7xl mx-auto">
                 
                 {/* 1. Alerta de Notificación: Se dibuja aquí, pero por sus clases 'fixed' aparecerá en la esquina superior derecha */}
@@ -59,9 +59,7 @@ export default function Proveedor({}) {
                         <span>{notificacion.mensaje}</span>
                     </div>
                 )}
-                <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-2xl font-bold text-[#0f3b8e]">Registrar Nuevo Proveedor</h1>
-                </div>
+               
 
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                     <form onSubmit={handleSubmit} className="space-y-6">{/*el formulario se envia cuando hayun submit en el boton que yo diga que es el submit */}
@@ -141,7 +139,7 @@ export default function Proveedor({}) {
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Días de Credito</label>
                                 <input
                                     type="text"
-                                    placeholder="Ej: ejemplo dias de credito?"
+                                    placeholder="Ej: 10"
                                     className="w-full border-gray-300 rounded-lg shadow-sm focus:border-[#0f3b8e] focus:ring focus:ring-[#0f3b8e] focus:ring-opacity-50"
                                     value={data.dias_credito}
                                     onChange={e => setData('dias_credito', e.target.value)}
@@ -151,7 +149,7 @@ export default function Proveedor({}) {
                         </div>
 
                         {/* Fila separada para el Checkbox y el Botón de envío */}
-                        <div className="flex flex-col md:flex-row justify-between items-center pt-4 border-t border-gray-100">
+                        <div className="flex flex-col md:flex-row justify-end items-center pt-4 border-t border-gray-100">
                             
 
                             <button

@@ -160,7 +160,8 @@ export default function IngresoStock({ auth }) {
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 lg:p-8 h-full flex flex-col items-center justify-start w-full max-w-full lg:max-w-6xl mx-auto mt-6">
 
                 <div className="w-full flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold text-[#0f3b8e]">Cargar Factura Electrónica (XML)</h2>
+                    <h2 className="text-lg font-semibold text-gray-800 mb-4">Cargar Factura Electrónica (XML)</h2>
+                    
                     
                     {datosFactura && (
                         <button 

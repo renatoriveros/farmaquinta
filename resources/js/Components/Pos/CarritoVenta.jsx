@@ -33,7 +33,7 @@ export default function CarritoVenta({ items, onModificar, onEliminar }) {
                                 
                                 <div className="flex items-center justify-between mt-1 gap-4">
                                     {item.codigo_barras && (
-                                        <p className="text-xs text-gray-400 font-mono">COD: {item.codigo_barras}</p>
+                                        <p className="text-xs text-gray-400 font-mono">EAN: {item.codigo_barras}</p>
                                     )}
                                     
                                     <div className="flex gap-4 ml-auto">

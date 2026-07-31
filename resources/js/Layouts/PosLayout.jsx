@@ -102,7 +102,7 @@ export default function PosLayout({ auth, children, titulo }) {
                             <Link href="/stock/movimientos" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/stock/movimientos' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
                                 Movimientos Extras
                             </Link>
-                            <Link href="/stock/lotes" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/stock/lotes' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
+                            <Link href="/stock/gestion" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/stock/lotes' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
                                 Gestión de Lotes
                             </Link>
                             <Link href="/stock/ubicacion" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/stock/ubicacion' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>

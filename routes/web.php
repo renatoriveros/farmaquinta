@@ -11,6 +11,7 @@ use App\Http\Controllers\IngresoMercaderiaController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\MovimientoMercaderiaController;
+use App\Http\Controllers\GestionController;
 
 // 1. PÁGINA DE INICIO (Pública)
 Route::get('/', function () {
@@ -38,6 +39,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/ingreso', function () {
         return Inertia::render('Ingreso');
     })->name('ingreso');
+
+    
 
 
     // GRUPO DE RUTAS NUEVO
@@ -73,6 +76,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/buscar-producto/{codigo}', [MovimientoMercaderiaController::class, 'buscarPorCodigo']);
         // Guardar el movimiento en BD
         Route::post('/movimientos', [MovimientoMercaderiaController::class, 'store'])->name('movimientos.store');
+
+        Route::get('/gestion', [GestionController::class, 'index'])->name('gestion');
         
 
 
