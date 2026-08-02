@@ -40,7 +40,8 @@ export default function PosLayout({ auth, children, titulo }) {
                     </Link>
                     
 
-                    {/* SECCIÓN NUEVO - DESPLEGABLE */}
+                    {/* SECCIÓN NUEVO - DESPLEGABLE (Solo Administrador) */}
+                {auth.user.rol === 'Administrador' && (
                 <div>
                     <button 
                         onClick={() => setMenuNuevoAbierto(!menuNuevoAbierto)}
@@ -73,6 +74,7 @@ export default function PosLayout({ auth, children, titulo }) {
                         </div>
                     )}
                 </div>
+                )}
                 
                 {/* SECCIÓN STOCK - DESPLEGABLE */}
                 <div>
@@ -100,17 +102,22 @@ export default function PosLayout({ auth, children, titulo }) {
                                 Ingreso de Mercadería
                             </Link>
                             <Link href="/stock/movimientos" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/stock/movimientos' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
-                                Movimientos Extras
+                                Movimiento Productos
                             </Link>
                             <Link href="/stock/gestion" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/stock/lotes' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
                                 Gestión de Lotes
                             </Link>
+
+                            {auth.user.rol === 'Administrador' && (
+                                <Link href="/stock/dinero" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/stock/dinero' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
+                                    Movimientos caja
+                                </Link>
+                            )}
+
                             <Link href="/stock/ubicacion" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/stock/ubicacion' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
                                 Ubicación Física
                             </Link>
-                            <Link href="/stock/motivos" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/stock/motivos' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
-                                Catálogo de Motivos
-                            </Link>
+
                         </div>
                     )}
                 </div>

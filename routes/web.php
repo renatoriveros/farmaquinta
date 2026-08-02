@@ -12,6 +12,7 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\MovimientoMercaderiaController;
 use App\Http\Controllers\GestionController;
+use App\Http\Controllers\MovimientoDineroController;
 
 // 1. PÁGINA DE INICIO (Pública)
 Route::get('/', function () {
@@ -43,22 +44,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
 
 
-    // GRUPO DE RUTAS NUEVO
-    
-    Route::prefix('nuevo')->group(function () {
-    Route::get('/producto', [ProductoController::class, 'create'])->name('nuevo.producto');// cargo el render de nuevo / producto
-    //pero primero paso a productocontroller y ejecuto la funcion create(el getall)
-    Route::post('/producto', [ProductoController::class, 'NuevoRemedio'])->name('ingreso.nuevo.producto');
-    //renderizo nuevo producto, pero antes paso a producto controller y ejecuto nuevoRemedio
+    // GRUPO DE RUTAS NUEVO (Solo Administrador)
+    Route::prefix('nuevo')->middleware('role:Administrador')->group(function () {
+        Route::get('/producto', [ProductoController::class, 'create'])->name('nuevo.producto');
+        Route::post('/producto', [ProductoController::class, 'NuevoRemedio'])->name('ingreso.nuevo.producto');
 
-    // entra a create para mostrar el formulario
-    Route::get('/proveedor', [ProveedorController::class, 'create'])->name('nuevo.proveedor');
-    // para guardar los datos
-    Route::post('/proveedor', [ProveedorController::class, 'store'])->name('ingreso.nuevo.proveedor');
-    Route::get('/activar-producto', [ProductoController::class, 'gestionar'])->name('activar-producto');
-    //toggle es el activar o desactivar producto
-    Route::post('/producto/{id_producto}/toggle', [ProductoController::class, 'toggleActivo'])->name('nuevo.producto.toggle');
-
+        Route::get('/proveedor', [ProveedorController::class, 'create'])->name('nuevo.proveedor');
+        Route::post('/proveedor', [ProveedorController::class, 'store'])->name('ingreso.nuevo.proveedor');
+        
+        Route::get('/activar-producto', [ProductoController::class, 'gestionar'])->name('activar-producto');
+        Route::post('/producto/{id_producto}/toggle', [ProductoController::class, 'toggleActivo'])->name('nuevo.producto.toggle');
     });
     
     // GRUPO DE RUTAS STOCK
@@ -70,14 +65,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/ingreso/previsualizar', [IngresoMercaderiaController::class, 'previsualizar'])->name('ingreso.previsualizar');
         Route::post('/ingreso/guardar', [IngresoMercaderiaController::class, 'guardarLote'])->name('ingreso.guardar');
         
-        //rutas para movimientos extras
+        //Govimientos extras
         Route::get('/movimientos', [MovimientoMercaderiaController::class, 'create'])->name('movimientos');
         //buscar codigo para saber cual sacar y todos sus lotes
         Route::get('/buscar-producto/{codigo}', [MovimientoMercaderiaController::class, 'buscarPorCodigo']);
         // Guardar el movimiento en BD
         Route::post('/movimientos', [MovimientoMercaderiaController::class, 'store'])->name('movimientos.store');
-
+         
+        //Gestion De Lotes
         Route::get('/gestion', [GestionController::class, 'index'])->name('gestion');
+
+        //Movimientos de Dineros (Solo Administrador)
+        Route::middleware('role:Administrador')->group(function () {
+            Route::get('/dinero', [MovimientoDineroController::class, 'create'])->name('MovimientosPlata');
+            Route::post('/dinero', [MovimientoDineroController::class, 'store'])->name('dinero.store');
+        });
+        
         
 
 
