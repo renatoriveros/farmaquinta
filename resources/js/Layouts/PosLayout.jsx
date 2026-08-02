@@ -7,6 +7,7 @@ export default function PosLayout({ auth, children, titulo }) {
     //sirve para mostrar el menu
     const [menuNuevoAbierto, setMenuNuevoAbierto] = useState(false);
     const [menuStockAbierto, setMenuStockAbierto] = useState(false);
+    const [menuHistorialAbierto, setMenuHistorialAbierto] = useState(false);
 
     // Verificamos si el usuario es un cajero y si NO tiene un turno activo en la BD
     const requiereApertura = auth.user.rol === 'Cajero' && !auth.turno_activo;
@@ -122,10 +123,55 @@ export default function PosLayout({ auth, children, titulo }) {
                     )}
                 </div>
 
+                {/* SECCIÓN HISTORIAL - DESPLEGABLE */}
+                <div>
+                    <button 
+                        onClick={() => setMenuHistorialAbierto(!menuHistorialAbierto)}
+                        className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-colors ${url.startsWith('/historial') ? 'bg-[#3b82f6] text-white font-semibold' : 'hover:bg-gray-800 hover:text-white'}`}
+                    >
+                        <div className="flex items-center gap-3">
+                            <span></span> Historial
+                        </div>
+                        
+                        <svg 
+                            className={`w-4 h-4 transition-transform duration-200 ${menuHistorialAbierto ? 'rotate-90' : ''}`} 
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
 
-                    <Link href="/historial" className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${url.startsWith('/historial') ? 'bg-[#3b82f6] text-white font-semibold' : 'hover:bg-gray-800 hover:text-white'}`}>
-                        <span></span> Historial
-                    </Link>
+                    {/* SUBMENÚ DE HISTORIAL */}
+                    {menuHistorialAbierto && (
+                        <div className="pl-4 pr-4 py-2 space-y-1 bg-blue-900/40 rounded-b-lg mb-2">
+                            <Link href="/historial/ventas" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/historial/ventas' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
+                                Ventas (Boletas)
+                            </Link>
+                            
+                            <Link href="/historial/mercaderia" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/historial/mercaderia' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
+                                Ingresos Mercadería
+                            </Link>
+                            
+                            <Link href="/historial/movimientos-mercaderia" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/historial/movimientos-mercaderia' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
+                                Movimientos Mercaderia
+                            </Link>
+
+                            {auth.user.rol === 'Administrador' && (
+                                <Link href="/historial/movimientos-dinero" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/historial/movimientos-dinero' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
+                                    Movimientos Caja
+                                </Link>
+                            )}
+                            
+                            <Link href="/historial/caja" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/historial/caja' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
+                                Cierres de Caja
+                            </Link>
+                            
+                            <Link href="/historial/turnos" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/historial/turnos' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
+                                Turnos
+                            </Link>
+                        </div>
+                    )}
+                </div>
                 </nav>
 
                 <div className="p-4 border-t border-gray-700/50 space-y-4">

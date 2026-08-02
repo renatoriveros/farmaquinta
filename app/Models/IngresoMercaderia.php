@@ -39,4 +39,12 @@ class IngresoMercaderia extends Model
     {
         return $this->hasMany(LoteInventario::class, 'id_ingreso', 'id_ingreso');
     }
+
+    /**
+     * Relación: Un ingreso tiene lotes en el historial.
+     */
+    public function lotesHistoria()
+    {
+        return $this->hasMany(LoteInventarioHistoria::class, 'id_ingreso', 'id_ingreso');
+    }
 }

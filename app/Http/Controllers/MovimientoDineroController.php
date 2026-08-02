@@ -13,10 +13,7 @@ class MovimientoDineroController extends Controller
      */
     public function create()
     {
-        $turnoActual = DB::table('turnos_caja')
-                        ->where('estado', 'Abierto')
-                        ->where('id_usuario', auth()->id())
-                        ->first();
+        $turnoActual = $this->obtenerTurnoActivo();
 
         if (!$turnoActual) {
             return Inertia::render('Stock/Dinero', [
@@ -49,10 +46,7 @@ class MovimientoDineroController extends Controller
             'observaciones' => 'nullable|string'
         ]);
 
-        $turnoActual = DB::table('turnos_caja')
-                        ->where('estado', 'Abierto')
-                        ->where('id_usuario', auth()->id())
-                        ->first();
+        $turnoActual = $this->obtenerTurnoActivo();
 
         if (!$turnoActual) {
             return back()->withErrors(['error' => 'No hay un turno abierto.']);
@@ -114,5 +108,20 @@ class MovimientoDineroController extends Controller
             'egresos' => $egresos,
             'saldo' => $saldoDisponible
         ];
+    }
+
+    /**
+     * Obtiene el turno activo. El Administrador puede ver cualquier turno abierto de la sucursal,
+     * mientras que el Cajero solo puede ver su propio turno.
+     */
+    private function obtenerTurnoActivo()
+    {
+        $query = DB::table('turnos_caja')->where('estado', 'Abierto');
+
+        if (auth()->user()->rol !== 'Administrador') {
+            $query->where('id_usuario', auth()->id());
+        }
+
+        return $query->first();
     }
 }

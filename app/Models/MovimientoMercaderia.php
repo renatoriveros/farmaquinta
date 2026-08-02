@@ -22,4 +22,14 @@ class MovimientoMercaderia extends Model
         'id_usuario',
         'fecha_hora'
     ];
+
+    public function producto()
+    {
+        return $this->belongsTo(Producto::class, 'id_producto', 'id_producto');
+    }
+
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'id_usuario', 'id'); // usually Users table PK is 'id'
+    }
 }

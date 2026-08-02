@@ -13,6 +13,7 @@ use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\MovimientoMercaderiaController;
 use App\Http\Controllers\GestionController;
 use App\Http\Controllers\MovimientoDineroController;
+use App\Http\Controllers\HistorialController;
 
 // 1. PÁGINA DE INICIO (Pública)
 Route::get('/', function () {
@@ -88,9 +89,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     });
 
-    Route::get('/historial', function () {
-        return Inertia::render('HistorialCompras');
-    })->name('historial');
+    // GRUPO DE RUTAS HISTORIAL
+    Route::prefix('historial')->name('historial.')->group(function () {
+        // Redirigir el index principal a mercaderia por defecto, o mostrar un dashboard de historial
+        Route::get('/', function () { return redirect()->route('historial.mercaderia'); })->name('index');
+        
+        // Historial de Ingresos de Mercadería (Compras)
+        Route::get('/mercaderia', [HistorialController::class, 'ingresosMercaderia'])->name('mercaderia');
+        
+        // Aquí irán las futuras rutas:
+        // Route::get('/ventas', [HistorialController::class, 'ventas'])->name('ventas');
+        Route::get('/movimientos-mercaderia', [HistorialController::class, 'movimientosMercaderia'])->name('movimientos-mercaderia');
+        
+        // Solo Administrador
+        // Route::middleware('role:Administrador')->get('/movimientos-dinero', [HistorialController::class, 'movimientosDinero'])->name('movimientos-dinero');
+        
+        // Route::get('/caja', [HistorialController::class, 'cierresCaja'])->name('caja');
+        // Route::get('/turnos', [HistorialController::class, 'turnos'])->name('turnos');
+    });
 
     // Gestión del Perfil (Predeterminado de Laravel)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

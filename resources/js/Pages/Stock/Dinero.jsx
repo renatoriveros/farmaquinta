@@ -114,12 +114,12 @@ export default function Dinero({ auth, turno_activo, desglose, saldo_disponible,
                                 <p className="text-xl font-bold text-teal-600">+{formatoMoneda(desglose.ingresos)}</p>
                             </div>
                             <div className="bg-white rounded-lg shadow-sm border border-gray-200 border-l-4 border-l-red-500 p-4">
-                                <p className="text-xs text-gray-500 font-bold uppercase mb-1">Egresos / Retiros</p>
+                                <p className="text-xs text-gray-500 font-bold uppercase mb-1"> Retiros</p>
                                 <p className="text-xl font-bold text-red-600">-{formatoMoneda(desglose.egresos)}</p>
                             </div>
-                            <div className="bg-[#1e40af] rounded-lg shadow-md border border-[#1e3a8a] p-4 text-black">
+                            <div className="bg-white rounded-lg shadow-md border border-gray-200 border-l-4 border-l-orange-500 p-4">
                                 <p className="text-xs text-gray-500 font-bold uppercase mb-1">Saldo en Caja</p>
-                                <p className="text-2xl font-extrabold">{formatoMoneda(saldo_disponible)}</p>
+                                <p className="text-2xl font-extrabold text-black-500">{formatoMoneda(saldo_disponible)}</p>
                             </div>
                         </div>
                     )}
