@@ -102,7 +102,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/movimientos-mercaderia', [HistorialController::class, 'movimientosMercaderia'])->name('movimientos-mercaderia');
         
         // Solo Administrador
-        // Route::middleware('role:Administrador')->get('/movimientos-dinero', [HistorialController::class, 'movimientosDinero'])->name('movimientos-dinero');
+        Route::middleware('role:Administrador')->get('/movimientos-dinero', [HistorialController::class, 'movimientosDinero'])->name('movimientos-dinero');
         
         // Route::get('/caja', [HistorialController::class, 'cierresCaja'])->name('caja');
         // Route::get('/turnos', [HistorialController::class, 'turnos'])->name('turnos');

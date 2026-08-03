@@ -47,4 +47,21 @@ class HistorialController extends Controller
             'movimientos' => $movimientos
         ]);
     }
+
+    /**
+     * Muestra el historial de movimientos de caja (solo admin).
+     */
+    public function movimientosDinero()
+    {
+        $movimientos = \App\Models\MovimientoCaja::with([
+            'turno.usuario:id,name'
+        ])
+        ->orderBy('fecha_hora', 'desc')
+        ->orderBy('id_movimiento', 'desc')
+        ->get();
+
+        return Inertia::render('Historial/Movimientos_dinero', [
+            'movimientos' => $movimientos
+        ]);
+    }
 }

@@ -9,6 +9,23 @@ export default function PosLayout({ auth, children, titulo }) {
     const [menuStockAbierto, setMenuStockAbierto] = useState(false);
     const [menuHistorialAbierto, setMenuHistorialAbierto] = useState(false);
 
+    // Función para manejar el acordeón: abre uno y cierra los demás
+    const handleToggleMenu = (menuName) => {
+        if (menuName === 'nuevo') {
+            setMenuNuevoAbierto(!menuNuevoAbierto);
+            setMenuStockAbierto(false);
+            setMenuHistorialAbierto(false);
+        } else if (menuName === 'stock') {
+            setMenuStockAbierto(!menuStockAbierto);
+            setMenuNuevoAbierto(false);
+            setMenuHistorialAbierto(false);
+        } else if (menuName === 'historial') {
+            setMenuHistorialAbierto(!menuHistorialAbierto);
+            setMenuNuevoAbierto(false);
+            setMenuStockAbierto(false);
+        }
+    };
+
     // Verificamos si el usuario es un cajero y si NO tiene un turno activo en la BD
     const requiereApertura = auth.user.rol === 'Cajero' && !auth.turno_activo;
 
@@ -45,7 +62,7 @@ export default function PosLayout({ auth, children, titulo }) {
                 {auth.user.rol === 'Administrador' && (
                 <div>
                     <button 
-                        onClick={() => setMenuNuevoAbierto(!menuNuevoAbierto)}
+                        onClick={() => handleToggleMenu('nuevo')}
                         className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-colors ${url.startsWith('/nuevo') ? 'bg-[#3b82f6] text-white font-semibold' : 'hover:bg-gray-800 hover:text-white'}`}
                     >
                         <div className="flex items-center gap-3">
@@ -80,7 +97,7 @@ export default function PosLayout({ auth, children, titulo }) {
                 {/* SECCIÓN STOCK - DESPLEGABLE */}
                 <div>
                     <button 
-                        onClick={() => setMenuStockAbierto(!menuStockAbierto)}
+                        onClick={() => handleToggleMenu('stock')}
                         className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-colors ${url.startsWith('/stock') ? 'bg-[#3b82f6] text-white font-semibold' : 'hover:bg-gray-800 hover:text-white'}`}
                     >
                         <div className="flex items-center gap-3">
@@ -126,7 +143,7 @@ export default function PosLayout({ auth, children, titulo }) {
                 {/* SECCIÓN HISTORIAL - DESPLEGABLE */}
                 <div>
                     <button 
-                        onClick={() => setMenuHistorialAbierto(!menuHistorialAbierto)}
+                        onClick={() => handleToggleMenu('historial')}
                         className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-colors ${url.startsWith('/historial') ? 'bg-[#3b82f6] text-white font-semibold' : 'hover:bg-gray-800 hover:text-white'}`}
                     >
                         <div className="flex items-center gap-3">
@@ -153,7 +170,7 @@ export default function PosLayout({ auth, children, titulo }) {
                             </Link>
                             
                             <Link href="/historial/movimientos-mercaderia" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/historial/movimientos-mercaderia' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
-                                Movimientos Mercaderia
+                                Movimiento Productos
                             </Link>
 
                             {auth.user.rol === 'Administrador' && (

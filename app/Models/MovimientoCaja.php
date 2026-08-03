@@ -24,4 +24,9 @@ class MovimientoCaja extends Model
         'concepto',
         'fecha_hora',
     ];
+
+    public function turno()
+    {
+        return $this->belongsTo(TurnoCaja::class, 'id_turno', 'id_turno');
+    }
 }

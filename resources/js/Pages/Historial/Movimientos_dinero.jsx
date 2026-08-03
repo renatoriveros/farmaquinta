@@ -2,26 +2,25 @@ import React, { useState, useEffect } from 'react';
 import PosLayout from '@/Layouts/PosLayout';
 import { Head } from '@inertiajs/react';
 
-export default function Mercaderia({ auth, movimientos }) {
+export default function MovimientosDinero({ auth, movimientos }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [fechaDesde, setFechaDesde] = useState('');
     const [fechaHasta, setFechaHasta] = useState('');
     const [filtroTipo, setFiltroTipo] = useState('todos');
-    const [visibleCount, setVisibleCount] = useState(5);
+    const [visibleCount, setVisibleCount] = useState(10);
 
     // Resetear contador cuando cambian los filtros
     useEffect(() => {
-        setVisibleCount(5);
+        setVisibleCount(10);
     }, [searchTerm, fechaDesde, fechaHasta, filtroTipo]);
 
     // Lógica de Filtrado: Búsqueda + Rango Fechas + Tipo
     const filteredMovimientos = movimientos.filter(mov => {
         // Texto
-        const prodNombre = mov.producto?.nombre_comercial ? mov.producto.nombre_comercial.toLowerCase() : '';
-        const lote = mov.numero_lote ? mov.numero_lote.toLowerCase() : '';
+        const concepto = mov.concepto ? mov.concepto.toLowerCase() : '';
         const search = searchTerm.toLowerCase();
         
-        const coincideTexto = prodNombre.includes(search) || lote.includes(search);
+        const coincideTexto = concepto.includes(search);
 
         // Fecha
         let coincideFecha = true;
@@ -39,7 +38,7 @@ export default function Mercaderia({ auth, movimientos }) {
 
         // Tipo
         let coincideTipo = true;
-        if (filtroTipo !== 'todos' && mov.tipo_movimiento !== filtroTipo) {
+        if (filtroTipo !== 'todos' && mov.tipo_movimiento.toLowerCase() !== filtroTipo) {
             coincideTipo = false;
         }
 
@@ -49,26 +48,15 @@ export default function Mercaderia({ auth, movimientos }) {
     const visibleMovimientos = filteredMovimientos.slice(0, visibleCount);
     
     const handleLoadMore = () => {
-        setVisibleCount(prev => prev + 5);
-    };
-
-    const formatMotivo = (motivo) => {
-        const motivos = {
-            'uso_interno': 'Uso Interno',
-            'ajuste_inventario': 'Ajuste de Inventario',
-            'no_estaba_xml': 'Diferencia XML',
-            'ingreso_externo': 'Ingreso Externo',
-            'vencimiento': 'Vencimiento / Merma'
-        };
-        return motivos[motivo] || motivo;
+        setVisibleCount(prev => prev + 10);
     };
 
     return (
         <PosLayout 
             auth={auth} 
-            titulo="Historial de Movimientos de Mercadería"
+            titulo="Historial de Movimientos de Caja"
         >
-            <Head title="Ajustes y Mermas" />
+            <Head title="Movimientos Caja" />
 
             <div className="flex flex-col h-full bg-gray-50 p-6 space-y-6">
                 
@@ -90,8 +78,8 @@ export default function Mercaderia({ auth, movimientos }) {
                                 onChange={(e) => setFiltroTipo(e.target.value)}
                             >
                                 <option value="todos">Todos</option>
-                                <option value="entrada">Entradas</option>
-                                <option value="salida">Salidas</option>
+                                <option value="ingreso">Ingresos</option>
+                                <option value="egreso">Egresos</option>
                             </select>
                         </div>
 
@@ -117,9 +105,9 @@ export default function Mercaderia({ auth, movimientos }) {
                         </div>
 
                         {/* Botón limpiar */}
-                        {(fechaDesde || fechaHasta || filtroTipo !== 'todos') && (
+                        {(fechaDesde || fechaHasta || filtroTipo !== 'todos' || searchTerm) && (
                             <button 
-                                onClick={() => { setFechaDesde(''); setFechaHasta(''); setFiltroTipo('todos'); }}
+                                onClick={() => { setFechaDesde(''); setFechaHasta(''); setFiltroTipo('todos'); setSearchTerm(''); }}
                                 className="flex items-center gap-1.5 px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg text-sm font-medium transition-colors border border-gray-200"
                             >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -137,7 +125,7 @@ export default function Mercaderia({ auth, movimientos }) {
                             </div>
                             <input
                                 type="text"
-                                placeholder="Buscar producto o lote..."
+                                placeholder="Buscar por concepto..."
                                 className="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-[#3b82f6] focus:border-[#3b82f6]"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -152,12 +140,11 @@ export default function Mercaderia({ auth, movimientos }) {
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="bg-gray-50/50 border-b border-gray-100">
-                                    <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Fecha / Usuario</th>
-                                    <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Producto y Lote</th>
-                                    <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Tipo</th>
-                                    <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Cantidad</th>
-                                    <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Motivo</th>
-                                    <th className="py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Observaciones</th>
+                                    <th className="w-[15%] py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Fecha / Hora</th>
+                                    <th className="w-[20%] py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Usuario (Turno)</th>
+                                    <th className="w-[15%] py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Tipo</th>
+                                    <th className="w-[15%] py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-left">Monto</th>
+                                    <th className="w-[35%] py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Concepto</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
@@ -167,62 +154,51 @@ export default function Mercaderia({ auth, movimientos }) {
                                             <td className="py-4 px-6">
                                                 <div className="font-semibold text-gray-800 text-sm">
                                                     {new Date(mov.fecha_hora).toLocaleDateString('es-CL', {
-                                                        day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'
+                                                        day: '2-digit', month: 'short', year: 'numeric'
                                                     })}
                                                 </div>
-                                                <div className="text-xs text-gray-500 flex items-center gap-1 mt-1">
-                                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                                                    {mov.usuario?.name || 'Desconocido'}
-                                                </div>
+                                                
                                             </td>
                                             
                                             <td className="py-4 px-6">
-                                                <div className="text-sm font-bold text-gray-900">{mov.producto?.nombre_comercial}</div>
-                                                <div className="text-xs text-gray-500 flex gap-2 items-center mt-1">
-                                                    <span>Cód: {mov.producto?.codigo_barras}</span>
-                                                    <span className="text-gray-300">|</span>
-                                                    <span className="font-semibold text-indigo-600">{mov.numero_lote}</span>
+                                                <div className="text-sm font-bold text-gray-900">
+                                                    {mov.turno?.usuario?.name || 'Desconocido'}
                                                 </div>
+                                               
                                             </td>
 
                                             <td className="py-4 px-6 text-center">
                                                 <span className={`px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full ${
-                                                    mov.tipo_movimiento === 'entrada' 
+                                                    mov.tipo_movimiento.toLowerCase() === 'ingreso' 
                                                         ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' 
                                                         : 'bg-rose-100 text-rose-800 border border-rose-200'
                                                 }`}>
-                                                    {mov.tipo_movimiento === 'entrada' ? 'ENTRADA' : 'SALIDA'}
+                                                    {mov.tipo_movimiento.toUpperCase()}
                                                 </span>
                                             </td>
 
-                                            <td className="py-4 px-6 text-center">
-                                                <span className={`text-base font-black ${mov.tipo_movimiento === 'entrada' ? 'text-emerald-600' : 'text-rose-600'}`}>
-                                                    {mov.tipo_movimiento === 'entrada' ? '+' : '-'}{mov.cantidad}
+                                            <td className="py-4 px-6 text-left">
+                                                <span className={`text-base font-black ${mov.tipo_movimiento.toLowerCase() === 'ingreso' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                                                    {mov.tipo_movimiento.toLowerCase() === 'ingreso' ? '+' : '-'}${Number(mov.monto).toLocaleString('es-CL')}
                                                 </span>
                                             </td>
 
                                             <td className="py-4 px-6">
-                                                <div className="text-sm font-medium text-gray-700 bg-gray-100 px-2 py-1 rounded w-fit">
-                                                    {formatMotivo(mov.motivo)}
-                                                </div>
-                                            </td>
-
-                                            <td className="py-4 px-6">
-                                                <p className="text-sm text-gray-500 italic max-w-xs truncate" title={mov.observaciones}>
-                                                    {mov.observaciones || '--'}
+                                                <p className="text-sm font-medium text-gray-700 max-w-full break-words">
+                                                    {mov.concepto || '--'}
                                                 </p>
                                             </td>
                                         </tr>
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="6" className="py-12 text-center text-gray-500">
+                                        <td colSpan="5" className="py-12 text-center text-gray-500">
                                             <div className="flex flex-col items-center justify-center">
                                                 <svg className="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                 </svg>
-                                                <p className="text-lg font-medium text-gray-900">No hay movimientos registrados</p>
-                                                <p className="text-sm">No se encontraron ajustes o mermas con estos filtros.</p>
+                                                <p className="text-lg font-medium text-gray-900">No hay movimientos de dinero</p>
+                                                <p className="text-sm">No se encontraron registros con estos filtros.</p>
                                             </div>
                                         </td>
                                     </tr>

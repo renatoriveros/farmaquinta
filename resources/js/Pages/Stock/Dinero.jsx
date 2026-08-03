@@ -100,7 +100,7 @@ export default function Dinero({ auth, turno_activo, desglose, saldo_disponible,
 
                     {/* DESGLOSE DE CAJA (KPIs) */}
                     {turno_activo && (
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div className="bg-white rounded-lg shadow-sm border border-gray-200 border-l-4 border-l-blue-500 p-4">
                                 <p className="text-xs text-gray-500 font-bold uppercase mb-1">Apertura</p>
                                 <p className="text-xl font-bold text-gray-800">{formatoMoneda(desglose.apertura)}</p>
@@ -109,10 +109,7 @@ export default function Dinero({ auth, turno_activo, desglose, saldo_disponible,
                                 <p className="text-xs text-gray-500 font-bold uppercase mb-1">Ventas (Efectivo)</p>
                                 <p className="text-xl font-bold text-green-600">+{formatoMoneda(desglose.ventas)}</p>
                             </div>
-                            <div className="bg-white rounded-lg shadow-sm border border-gray-200 border-l-4 border-l-teal-500 p-4">
-                                <p className="text-xs text-gray-500 font-bold uppercase mb-1">Ingresos Extra</p>
-                                <p className="text-xl font-bold text-teal-600">+{formatoMoneda(desglose.ingresos)}</p>
-                            </div>
+                            
                             <div className="bg-white rounded-lg shadow-sm border border-gray-200 border-l-4 border-l-red-500 p-4">
                                 <p className="text-xs text-gray-500 font-bold uppercase mb-1"> Retiros</p>
                                 <p className="text-xl font-bold text-red-600">-{formatoMoneda(desglose.egresos)}</p>
