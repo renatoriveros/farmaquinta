@@ -22,16 +22,18 @@ export default function CierresCaja({ auth, cierres }) {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col h-full">
                 {/* Cabecera con filtros */}
                 <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6 shrink-0">
+                    <div className="w-full xl:w-auto">
+                        <h2 className="text-xl font-bold text-gray-800">Cierres de caja</h2>
+                        
+                    </div>
                     <div className="flex-1 w-full relative">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <span className="text-gray-400">🔍</span>
-                        </div>
+                        
                         <input
                             type="text"
-                            placeholder="Buscar por usuario..."
+                            placeholder="Busca un turno por usuario..."
                             value={busqueda}
                             onChange={(e) => setBusqueda(e.target.value)}
-                            className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0f3b8e] focus:border-[#0f3b8e] transition-colors text-sm"
+                            className="w-full pl-5 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0f3b8e] focus:border-[#0f3b8e] transition-colors text-sm"
                         />
                     </div>
                     

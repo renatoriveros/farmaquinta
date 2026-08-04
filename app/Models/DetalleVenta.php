@@ -19,4 +19,14 @@ class DetalleVenta extends Model
         'descuento',
         'subtotal'
     ];
+
+    public function producto()
+    {
+        return $this->belongsTo(Producto::class, 'id_producto');
+    }
+
+    public function lote()
+    {
+        return $this->belongsTo(Lote::class, 'id_lote');
+    }
 }

@@ -31,8 +31,8 @@ export default function TablaCierresCaja({ cierres }) {
                             <th className="w-[15%] py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Apertura</th>
                             <th className="w-[15%] py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Cierre</th>
                             
-                            <th className="w-[20%] py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Efectivo Decl. vs Teo.</th>
-                            <th className="w-[15%] py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Tarjetas Decl.</th>
+                            <th className="w-[20%] py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Efectivo</th>
+                            <th className="w-[15%] py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Declarado Tarjeta</th>
                             <th className="w-[10%] py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Estado</th>
                         </tr>
                     </thead>

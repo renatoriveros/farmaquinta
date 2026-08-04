@@ -21,4 +21,14 @@ class Venta extends Model
         'pago_recibido',
         'vuelto'
     ];
+
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'id_usuario');
+    }
+
+    public function detalles()
+    {
+        return $this->hasMany(DetalleVenta::class, 'id_venta');
+    }
 }

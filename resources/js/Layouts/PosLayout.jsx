@@ -178,9 +178,6 @@ export default function PosLayout({ auth, children, titulo }) {
                                 Cierres de Caja
                             </Link>
                             
-                            <Link href="/historial/turnos" className={`block w-full text-sm py-2 px-2 rounded transition-colors ${url === '/historial/turnos' ? 'text-[#3b82f6] font-semibold' : 'text-white hover:text-white hover:bg-gray-800'}`}>
-                                Turnos
-                            </Link>
                         </div>
                     )}
                 </div>

@@ -98,7 +98,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/mercaderia', [HistorialController::class, 'ingresosMercaderia'])->name('mercaderia');
         
         // Aquí irán las futuras rutas:
-        // Route::get('/ventas', [HistorialController::class, 'ventas'])->name('ventas');
+        Route::get('/ventas', [HistorialController::class, 'ventas'])->name('ventas');
         Route::get('/movimientos-mercaderia', [HistorialController::class, 'movimientosMercaderia'])->name('movimientos-mercaderia');
         
         // Solo Administrador
