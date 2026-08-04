@@ -104,7 +104,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Solo Administrador
         Route::middleware('role:Administrador')->get('/movimientos-dinero', [HistorialController::class, 'movimientosDinero'])->name('movimientos-dinero');
         
-        // Route::get('/caja', [HistorialController::class, 'cierresCaja'])->name('caja');
+        Route::get('/caja', [HistorialController::class, 'cierresCaja'])->name('caja');
         // Route::get('/turnos', [HistorialController::class, 'turnos'])->name('turnos');
     });
 
@@ -114,6 +114,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::post('/turno/abrir', [TurnoCajaController::class, 'abrir'])->name('turno.abrir');
+    Route::post('/turno/cerrar', [TurnoCajaController::class, 'cerrar'])->name('turno.cerrar');
     Route::get('/api/buscar-producto', [ProductoController::class, 'buscarPuntoVenta'])->name('api.productos.buscar');
     Route::post('/procesar-venta', [VentaController::class, 'procesarVenta'])->name('api.ventas.procesar');
     Route::post('/ingreso/previsualizar-xml', [IngresoMercaderiaController::class, 'previsualizar'])->name('ingreso.previsualizar-xml');

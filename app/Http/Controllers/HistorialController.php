@@ -64,4 +64,15 @@ class HistorialController extends Controller
             'movimientos' => $movimientos
         ]);
     }
+    public function cierresCaja()
+    {
+        $cierres = \App\Models\TurnoCaja::with('usuario:id,name')
+            ->orderBy('fecha_apertura', 'desc')
+            ->orderBy('id_turno', 'desc')
+            ->get();
+
+        return Inertia::render('Historial/Cierres_caja', [
+            'cierres' => $cierres
+        ]);
+    }
 }

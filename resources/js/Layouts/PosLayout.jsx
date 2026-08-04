@@ -1,5 +1,7 @@
-import { Head, Link, usePage, useForm } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
+import ModalAbrirTurno from '@/Components/Abrir_y_Cerrar/ModalAbrirTurno';
+import ModalCerrarTurno from '@/Components/Abrir_y_Cerrar/ModalCerrarTurno';
 
 export default function PosLayout({ auth, children, titulo }) {
     // Obtenemos la URL actual para saber qué botón del menú pintar de azul
@@ -29,15 +31,8 @@ export default function PosLayout({ auth, children, titulo }) {
     // Verificamos si el usuario es un cajero y si NO tiene un turno activo en la BD
     const requiereApertura = auth.user.rol === 'Cajero' && !auth.turno_activo;
 
-    // Formulario de Inertia para enviar el monto de apertura al backend
-    const { data, setData, post, processing, errors } = useForm({
-        monto_apertura: '',
-    });
-
-    const handleAbrirTurno = (e) => {
-        e.preventDefault();
-        post(route('turno.abrir'));
-    };
+    // --- LÓGICA CIERRE DE TURNO ---
+    const [modalCierreAbierto, setModalCierreAbierto] = useState(false);
 
     return (
         <div className="flex h-screen bg-[#f4f7f6] font-sans relative">
@@ -191,15 +186,38 @@ export default function PosLayout({ auth, children, titulo }) {
                 </div>
                 </nav>
 
-                <div className="p-4 border-t border-gray-700/50 space-y-4">
-                    <div className="px-4">
-                        <p className="text-white font-medium text-sm">{auth.user.name}</p>
-                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">
-                            {auth.user.rol}
-                        </p>
+              <div className="p-4 border-t border-gray-700/50 space-y-4">
+                    {/* Nombre y rol */}
+                    <div className="flex items-center gap-3 px-4">
+                        <span className="w-5 flex-shrink-0"></span>
+                        <div>
+                            <p className="text-white font-medium text-sm">{auth.user.name}</p>
+                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">
+                                {auth.user.rol}
+                            </p>
+                        </div>
                     </div>
-                    <Link href={route('logout')} method="post" as="button" className="w-full flex items-center gap-3 px-4 py-2.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors text-sm font-semibold">
-                        <span></span> Cerrar Sesión
+                    
+                    {/* Botón Cerrar Turno (solo si turno activo) */}
+                    {auth.turno_activo && (
+                        <button 
+                            onClick={() => setModalCierreAbierto(true)}
+                            className="w-full flex items-center gap-3 px-4 py-2.5 text-orange-400 hover:text-orange-300 hover:bg-orange-500/10 rounded-lg transition-colors text-sm font-semibold"
+                        >
+                            <span className="w-5 flex-shrink-0"></span>
+                            Cerrar Caja
+                        </button>
+                    )}
+
+                    {/* Botón Cerrar Sesión */}
+                    <Link 
+                        href={route('logout')} 
+                        method="post" 
+                        as="button" 
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors text-sm font-semibold"
+                    >
+                        <span className="w-5 flex-shrink-0"></span>
+                        Cerrar Sesión
                     </Link>
                 </div>
             </aside>
@@ -224,82 +242,16 @@ export default function PosLayout({ auth, children, titulo }) {
             </main>
 
             {/* MODAL DE APERTURA DE TURNO (DIFUMINADO DEL FONDO) */}
-            {requiereApertura && (
-                <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
-                    <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100 animate-in fade-in zoom-in-95 duration-200">
-                        {/* Cabecera del Modal */}
-                        <div className="bg-[#0f3b8e] text-white p-6 text-center flex flex-col items-center">
-                            
-                            <h3 className="text-xl font-bold">Apertura de Turno</h3>
-                            <p className="text-blue-200 text-xs mt-1">Declare su saldo inicial para habilitar las ventas</p>
-                        </div>
+            <ModalAbrirTurno 
+                isVisible={requiereApertura} 
+                auth={auth} 
+            />
 
-                        {/* Formulario */}
-                        <form onSubmit={handleAbrirTurno} className="p-6">
-                            <div className="mb-6">
-                                <label className="block text-sm font-bold text-gray-700 mb-2">Declarar Efectivo de Apertura</label>
-                                <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                        <span className="text-gray-500 font-bold">$</span>
-                                    </div>
-                                    <input 
-                                        type="number" 
-                                        required
-                                        min="0"
-                                        placeholder="0.00"
-                                        value={data.monto_apertura}
-                                        onChange={(e) => setData('monto_apertura', e.target.value)}
-                                        className="w-full pl-8 pr-4 py-3.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0f3b8e] focus:border-[#0f3b8e] transition-colors text-lg font-bold text-gray-800 bg-gray-50"
-                                    />
-                                </div>
-                                {errors.monto_apertura && <p className="text-red-500 text-xs mt-1 font-semibold">{errors.monto_apertura}</p>}
-                                
-                                {/* Montos Rápidos */}
-                                <div className="flex gap-2 mt-3">
-                                    {['50000', '100000', '150000'].map((monto) => (
-                                        <button 
-                                            key={monto}
-                                            type="button"
-                                            onClick={() => setData('monto_apertura', monto)}
-                                            className="flex-1 py-1 px-2 border border-gray-200 hover:border-[#0f3b8e] hover:bg-blue-50 text-xs rounded font-semibold text-gray-600 hover:text-[#0f3b8e] transition-colors"
-                                        >
-                                            ${parseInt(monto).toLocaleString('es-CL')}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div className="mb-4 bg-gray-50 p-4 rounded-lg border border-gray-200 flex items-center gap-3">
-                                
-                                <div>
-                                    <p className="text-xs text-gray-500 font-medium">Usuario actual</p>
-                                    <p className="text-sm font-bold text-gray-800">{auth.user.name}</p>
-                                </div>
-                            </div>
-
-                            {/* Botones de acción */}
-                            <div className="space-y-2 mt-6">
-                                <button 
-                                    type="submit"
-                                    disabled={processing}
-                                    className="w-full bg-[#0f3b8e] hover:bg-[#0a2966] text-white font-bold py-3 px-4 rounded-lg transition-colors flex justify-center items-center gap-2 shadow"
-                                >
-                                    Confirmar y Abrir Turno <span>➜</span>
-                                </button>
-
-                                <Link 
-                                    href={route('logout')} 
-                                    method="post" 
-                                    as="button" 
-                                    className="w-full text-center text-sm text-red-600 hover:text-red-800 font-semibold py-2 transition-colors"
-                                >
-                                    Cancelar y Salir
-                                </Link>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+            {/* MODAL DE CIERRE DE TURNO */}
+            <ModalCerrarTurno 
+                isVisible={modalCierreAbierto} 
+                onClose={() => setModalCierreAbierto(false)} 
+            />
         </div>
     );
 }

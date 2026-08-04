@@ -26,19 +26,16 @@ export default function IngresosHistorico({ auth, ingresos }) {
         
         const coincideTexto = folioStr.includes(search) || proveedorNombre.includes(search);
 
-        // Filtro de fechas (comparando la cadena de fecha directamente o convirtiendo a Date)
-        // ingreso.fecha_ingreso viene tipo "2026-07-19"
+        // Filtro de fechas comparando strings YYYY-MM-DD directamente
         let coincideFecha = true;
-        const fechaIng = new Date(ingreso.fecha_ingreso).getTime();
+        const fechaSoloDia = ingreso.fecha_ingreso.split(' ')[0]; // Asegura formato YYYY-MM-DD
 
-        if (fechaDesde) {
-            const desde = new Date(fechaDesde + 'T00:00:00').getTime();
-            if (fechaIng < desde) coincideFecha = false;
+        if (fechaDesde && fechaSoloDia < fechaDesde) {
+            coincideFecha = false;
         }
 
-        if (fechaHasta) {
-            const hasta = new Date(fechaHasta + 'T23:59:59').getTime();
-            if (fechaIng > hasta) coincideFecha = false;
+        if (fechaHasta && fechaSoloDia > fechaHasta) {
+            coincideFecha = false;
         }
 
         return coincideTexto && coincideFecha;
@@ -154,9 +151,14 @@ export default function IngresosHistorico({ auth, ingresos }) {
                                                 </div>
                                             </td>
                                             <td className="py-4 px-6 text-sm text-gray-600">
-                                                {new Date(ingreso.fecha_ingreso).toLocaleDateString('es-CL', {
-                                                    day: '2-digit', month: 'short', year: 'numeric'
-                                                })}
+                                                {(() => {
+                                                    const parts = ingreso.fecha_ingreso.split(' ')[0].split('-');
+                                                    if (parts.length === 3) {
+                                                        const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+                                                        return dateObj.toLocaleDateString('es-CL', { day: '2-digit', month: 'short', year: 'numeric' });
+                                                    }
+                                                    return ingreso.fecha_ingreso;
+                                                })()}
                                             </td>
                                             <td className="py-4 px-6">
                                                 <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
