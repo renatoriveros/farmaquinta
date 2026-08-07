@@ -9,6 +9,11 @@ export default {
         './resources/views/**/*.blade.php',
         './resources/js/**/*.jsx',
     ],
+    safelist: [
+        { pattern: /bg-(sky|orange|rose)-(50|100|200|400|600)/ },
+        { pattern: /border-(sky|orange|rose)-(100|200|400|600)/ },
+        { pattern: /text-(sky|orange|rose)-(100|200|400|600|800)/ },
+    ],
 
     theme: {
         extend: {

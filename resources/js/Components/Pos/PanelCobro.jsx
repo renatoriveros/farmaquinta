@@ -77,9 +77,9 @@ export default function PanelCobro({
 
             {/* PARTE INFERIOR: Total Gigante y Cuadrícula de Pagos */}
             <div className="mt-4 pt-4 border-t border-gray-100">
-                <div className="flex justify-between items-end mb-6">
-                    <span className="text-gray-500 font-bold uppercase tracking-wider">Total a Pagar</span>
-                    <span className="text-3xl font-black">
+                <div className="flex items-center gap-2 mb-4">
+                    <span className="text-gray-500 font-bold uppercase tracking-wider">Total: </span>
+                    <span className="text-2xl font-black">
                         ${total.toLocaleString('es-CL')}
                     </span>
                 </div>

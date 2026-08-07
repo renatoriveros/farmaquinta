@@ -22,3 +22,7 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+scrapers/node_modules
+*_raw.html
+*_test.html
+*_login.html

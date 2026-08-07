@@ -8,32 +8,40 @@ use Illuminate\Support\Facades\DB;
 
 class MovimientoDineroController extends Controller
 {
-    /**
-     * Muestra el formulario para registrar movimientos de dinero (Ingresos/Egresos)
-     */
     public function create()
     {
         $turnoActual = $this->obtenerTurnoActivo();
+        $isAdmin = auth()->user()->rol === 'Administrador';
 
-        if (!$turnoActual) {
+        if (!$turnoActual && !$isAdmin) {
             return Inertia::render('Stock/Dinero', [
                 'error_turno' => 'No hay un turno abierto. Debes abrir la caja antes de registrar movimientos.',
                 'saldo_disponible' => 0
             ]);
         }
 
-        $desglose = $this->calcularDesgloseCaja($turnoActual);
-
-        return Inertia::render('Stock/Dinero', [
-            'turno_activo' => true,
-            'id_turno' => $turnoActual->id_turno,
-            'desglose' => [
+        if ($turnoActual) {
+            $desglose = $this->calcularDesgloseCaja($turnoActual);
+            $saldoDisponible = $desglose['saldo'];
+            $desgloseArr = [
                 'apertura' => $desglose['apertura'],
                 'ventas' => $desglose['ventas'],
                 'ingresos' => $desglose['ingresos'],
                 'egresos' => $desglose['egresos'],
-            ],
-            'saldo_disponible' => $desglose['saldo']
+            ];
+        } else {
+            // Es Administrador sin turno activo (Mueve dinero general de la farmacia)
+            $saldoDisponible = null; // No hay límite para el administrador
+            $desgloseArr = [
+                'apertura' => 0, 'ventas' => 0, 'ingresos' => 0, 'egresos' => 0
+            ];
+        }
+
+        return Inertia::render('Stock/Dinero', [
+            'turno_activo' => $turnoActual ? true : false,
+            'id_turno' => $turnoActual ? $turnoActual->id_turno : null,
+            'desglose' => $desgloseArr,
+            'saldo_disponible' => $saldoDisponible
         ]);
     }
 
@@ -47,12 +55,14 @@ class MovimientoDineroController extends Controller
         ]);
 
         $turnoActual = $this->obtenerTurnoActivo();
+        $isAdmin = auth()->user()->rol === 'Administrador';
 
-        if (!$turnoActual) {
+        if (!$turnoActual && !$isAdmin) {
             return back()->withErrors(['error' => 'No hay un turno abierto.']);
         }
 
-        if ($request->tipo_movimiento === 'egreso') {
+        // Si es un egreso y está amarrado a un turno, validar que haya saldo en la caja registradora
+        if ($request->tipo_movimiento === 'egreso' && $turnoActual) {
             $desglose = $this->calcularDesgloseCaja($turnoActual);
 
             if ($request->monto > $desglose['saldo']) {
@@ -66,7 +76,7 @@ class MovimientoDineroController extends Controller
         }
 
         DB::table('movimientos_caja')->insert([
-            'id_turno' => $turnoActual->id_turno,
+            'id_turno' => $turnoActual ? $turnoActual->id_turno : null,
             'tipo_movimiento' => $request->tipo_movimiento,
             'monto' => $request->monto,
             'concepto' => $concepto,

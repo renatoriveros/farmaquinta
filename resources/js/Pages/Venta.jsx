@@ -260,9 +260,9 @@ export default function Venta({ auth }) {
                 </div>
             )}
             
-            <div className="flex gap-6 h-full">
+            <div className="flex flex-col lg:flex-row gap-6 h-full overflow-y-auto lg:overflow-hidden pb-20 lg:pb-0">
                 
-                {/* LADO IZQUIERDO: Buscador y Tabla del Carrito (70% del ancho) */}
+                {/* LADO IZQUIERDO: Buscador y Tabla del Carrito */}
                 <div className="flex-1 flex flex-col gap-4">
                     
                     {/* ENCABEZADO Y AVISO DE VENTAS EN ESPERA */}
@@ -293,8 +293,8 @@ export default function Venta({ auth }) {
                     />
                 </div>
 
-                 {/* LADO DERECHO: Panel de Cobro (30% del ancho) */}
-                 <div className="w-[30%] bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between">
+                 {/* LADO DERECHO: Panel de Cobro */}
+                 <div className="w-full lg:w-[320px] xl:w-[340px] bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between shrink-0 mb-6 lg:mb-0">
                         <PanelCobro 
                             subtotal={subtotal}
                             descuento={descuento}

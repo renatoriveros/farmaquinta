@@ -14,6 +14,8 @@ use App\Http\Controllers\MovimientoMercaderiaController;
 use App\Http\Controllers\GestionController;
 use App\Http\Controllers\MovimientoDineroController;
 use App\Http\Controllers\HistorialController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CotizadorController;
 
 // 1. PÁGINA DE INICIO (Pública)
 Route::get('/', function () {
@@ -41,6 +43,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/ingreso', function () {
         return Inertia::render('Ingreso');
     })->name('ingreso');
+
+    // GRUPO DE RUTAS DASHBOARD (BI) - Solo Administrador
+    Route::prefix('dashboard')->middleware('role:Administrador')->name('dashboard.')->group(function () {
+        Route::get('/rendimiento', [DashboardController::class, 'rendimientoVentas'])->name('rendimiento');
+        Route::get('/productos', [DashboardController::class, 'productos'])->name('productos');
+        Route::get('/analisis', [DashboardController::class, 'analisis'])->name('analisis');
+        Route::get('/flujo', [DashboardController::class, 'flujo'])->name('flujo');
+    });
+
+    // COTIZADOR INTELIGENTE (B2B) - Solo Administrador
+    Route::middleware('role:Administrador')->group(function () {
+        Route::get('/cotizador', [CotizadorController::class, 'index'])->name('cotizador');
+    });
+
+
 
     
 
@@ -120,5 +137,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/ingreso/previsualizar-xml', [IngresoMercaderiaController::class, 'previsualizar'])->name('ingreso.previsualizar-xml');
     Route::post('/api/ingresos/guardar-lote', [IngresoMercaderiaController::class, 'guardarLote'])->name('api.ingresos.guardar-lote');
 });
+
+// RUTA DE BÚSQUEDA ABIERTA// RUTAS PUBLICAS PARA PRUEBAS (LUEGO VOLVERÁN A MIDDLEWARE AUTH)
+Route::get('/cotizador/buscar', [CotizadorController::class, 'buscar'])->name('cotizador.buscar');
+Route::post('/cotizador/enviar-carrito', [CotizadorController::class, 'enviarCarrito'])->name('cotizador.enviar');
+Route::get('/cotizador/actualizar-cookie', [CotizadorController::class, 'actualizarCookieGet'])->name('cotizador.actualizar-cookie');
 
 require __DIR__.'/auth.php';
